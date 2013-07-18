@@ -1,0 +1,21 @@
+{
+    "name": "bigfoot/media-bundle",
+    "type": "symfony-bundle",
+    "description": "Bigfoot media bundle",
+    "keywords": [],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Guillaume Manen",
+            "email": "g.manen@c2is.fr"
+        }
+    ],
+    "require": {
+        "bigfoot/core-bundle": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "Bigfoot\\Bundle\\MediaBundle": "" }
+    },
+    "target-dir": "Bigfoot/Bundle/MediaBundle",
+    "minimum-stability": "dev"
+}
