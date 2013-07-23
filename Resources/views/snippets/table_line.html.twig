@@ -1,0 +1,19 @@
+<tr class="portfolio-media-item{% if used == true %} used{% else %} unused{% endif %}" data-edit="formMedia{{ line.id }}" data-media-id="{{ line.id }}">
+    <td class="span1"><img class="crud-column-media" src="{{asset(line.file)}}"></td>
+    <td>{{ line.getMetadata('title') }}</td>
+    <td>{{ line.getMetadata('height') }}px</td>
+    <td>{{ line.getMetadata('width') }}px</td>
+    <td>{{ line.getMetadata('size') }}</td>
+    <td>{{ line.type }}</td>
+    <td class="span1">
+        <a class="portfolio-toggle-edit on" href="{{ path('portfolio_edit', {id: line.id}) }}"><i class="icon-edit"></i></a>
+        <a class="portfolio-toggle-edit off" href="{{ path('portfolio_edit', {id: line.id}) }}" style="display:none"><i class="icon-remove"></i></a>
+    </td>
+    <td class="span1">
+        <a class="portfolio-toggle-use on" href="#"{% if used == false %} style="display:none"{% endif %}><i class="icon-star"></i></a>
+        <a class="portfolio-toggle-use off" href="#"{% if used == true %} style="display:none"{% endif %}><i class="icon-star-empty"></i></a>
+    </td>
+    <td class="span1">
+        <a class="portfolio-media-delete" href="{{ path('portfolio_delete', {id: line.id}) }}"><i class="icon-trash"></i></a>
+    </td>
+</tr>

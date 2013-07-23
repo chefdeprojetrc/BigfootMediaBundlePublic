@@ -1,0 +1,12 @@
+{% extends bigfoot_theme_values.bundle~'::base.html.twig' %}
+
+{% block body %}
+    {% include 'BigfootCoreBundle:crud:form.html.twig' with {
+    'action_route': path('admin_portfolio_metadata_update', { 'id': entity.id }),
+    'action_name': 'Edit',
+    'form_title': 'Media metadata edit',
+    'cancel_route': 'admin_portfolio_metadata',
+    'form': edit_form,
+    'method': 'PUT'
+    } %}
+{% endblock %}

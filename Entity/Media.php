@@ -2,6 +2,7 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Entity;
 
+use Bigfoot\Bundle\CoreBundle\Entity\Tag;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Media
  *
- * @ORM\Table()
+ * @ORM\Table(name="portfolio_media")
  * @ORM\Entity(repositoryClass="Bigfoot\Bundle\MediaBundle\Entity\MediaRepository")
  */
 class Media
@@ -33,43 +34,6 @@ class Media
     /**
      * @var string
      *
-     * @Gedmo\Translatable
-     * @ORM\Column(name="title", type="string", length=255)
-     */
-    private $title;
-
-    /**
-     * @var string
-     *
-     * @Gedmo\Translatable
-     * @ORM\Column(name="description", type="text")
-     */
-    private $description;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="width", type="string", length=255)
-     */
-    private $width;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="height", type="string", length=255)
-     */
-    private $height;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="size", type="string", length=255)
-     */
-    private $size;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="type", type="string", length=255)
      */
     private $type;
@@ -82,11 +46,49 @@ class Media
     private $usages;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="MediaMetadata", mappedBy="media", cascade={"persist", "remove"}, fetch="EAGER")
+     */
+    private $metadatas;
+
+    /**
+     * Metadatas, in an associative array slug => value to ease value retrieving
+     *
+     * @var array
+     */
+    private $sortedMetadatas;
+
+    /**
+     * @var datetime $createdAt
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var datetime $updatedAt
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Bigfoot\Bundle\CoreBundle\Entity\Tag", cascade={"persist"})
+     */
+    private $tags;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->usages = new ArrayCollection();
+        $this->tags = new ArrayCollection();
+        $this->metadatas = new ArrayCollection();
+        $this->sortedMetadatas = array();
     }
 
     /**
@@ -123,121 +125,6 @@ class Media
     }
 
     /**
-     * Set title
-     *
-     * @param string $title
-     * @return Media
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    
-        return $this;
-    }
-
-    /**
-     * Get title
-     *
-     * @return string 
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     * @return Media
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string 
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set width
-     *
-     * @param string $width
-     * @return Media
-     */
-    public function setWidth($width)
-    {
-        $this->width = $width;
-    
-        return $this;
-    }
-
-    /**
-     * Get width
-     *
-     * @return string 
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     * Set height
-     *
-     * @param string $height
-     * @return Media
-     */
-    public function setHeight($height)
-    {
-        $this->height = $height;
-    
-        return $this;
-    }
-
-    /**
-     * Get height
-     *
-     * @return string 
-     */
-    public function getHeight()
-    {
-        return $this->height;
-    }
-
-    /**
-     * Set size
-     *
-     * @param string $size
-     * @return Media
-     */
-    public function setSize($size)
-    {
-        $this->size = $size;
-    
-        return $this;
-    }
-
-    /**
-     * Get size
-     *
-     * @return string 
-     */
-    public function getSize()
-    {
-        return $this->size;
-    }
-
-    /**
      * Set type
      *
      * @param string $type
@@ -268,5 +155,212 @@ class Media
     public function getUsages()
     {
         return $this->usages;
+    }
+
+    /**
+     * Set metadatas
+     *
+     * @param array $metadatas
+     * @return Media
+     */
+    public function setMetadatas($metadatas)
+    {
+        $this->metadatas = $metadatas;
+
+        return $this;
+    }
+
+    /**
+     * Add metadata
+     *
+     * @param MediaMetadata $metadata
+     * @return Media
+     */
+    public function addMetadata(MediaMetadata $metadata)
+    {
+        $this->metadatas->add($metadata);
+
+        return $this;
+    }
+
+    /**
+     * Get metadatas in an associative array slug => MediaMetadata
+     *
+     * @return array
+     */
+    public function getMetadatas()
+    {
+        if (!count($this->sortedMetadatas)) {
+            foreach ($this->metadatas as $mediaMetadada) {
+                $this->sortedMetadatas[$mediaMetadada->getMetadata()->getSlug()] = $mediaMetadada;
+            }
+        }
+
+        return $this->sortedMetadatas;
+    }
+
+    /**
+     * Get the value of a specific metadata
+     *
+     * @param string Metadata slug
+     * @return string Metadata value
+     */
+    public function getMetadata($slug)
+    {
+        if ($metadatas = $this->getMetadatas() and array_key_exists($slug, $metadatas)) {
+            return $metadatas[$slug]->getValue();
+        }
+
+        return null;
+    }
+
+    public function resetSortedMetadatas()
+    {
+        $this->sortedMetadatas = array();
+    }
+
+    /**
+     * Get creation time
+     *
+     * @return datetime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Get last update time
+     *
+     * @return datetime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set tags
+     *
+     * @param ArrayCollection $tags
+     * @return Media
+     */
+    public function setTags(ArrayCollection $tags)
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Add tag
+     *
+     * @param Tag tag
+     * @return Media
+     */
+    public function addTag(Tag $tag)
+    {
+        $this->tags->add($tag);
+
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param Tag tag
+     * @return Media
+     */
+    public function removeTag(Tag $tag)
+    {
+        $this->tags->remove($tag->getId());
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getFile();
+    }
+
+    /**
+     * @param \Symfony\Component\Form\Form $form
+     * @return void
+     */
+    public function uploadFile(\Symfony\Component\Form\Form $form)
+    {
+        if (!file_exists($this->getUploadRootDir() . '/' . $form['file']->getData()))
+        {
+            list($width, $height) = getimagesize($form['file']->getData()->getPathName());
+
+            $this->setWidth($width);
+            $this->setHeight($height);
+            $this->setType($form['file']->getData()->getClientMimeType());
+            $this->setSize($this->convertFileSize($form['file']->getData()->getClientSize()));
+        }
+
+        parent::uploadFile($form);
+    }
+
+    /**
+     * @param $bytes
+     * @return string
+     */
+    public function convertFileSize($bytes)
+    {
+        switch ($bytes) {
+            case $bytes > 1024*1024*1024:
+                return round($bytes/1024/1024/1024, 2) ." Go";
+            case $bytes > 1024*1024:
+                return round($bytes/1024/1024, 2) ." Mo";
+            case $bytes > 1024:
+                return round($bytes/1024, 2) ." Ko";
+            default:
+                return $bytes;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getUploadDir()
+    {
+        return 'portfolio';
+    }
+
+    /**
+     * @return string
+     */
+    public function getUploadRootDir()
+    {
+        return __DIR__.'/../../../web/'.$this->getUploadDir();
+    }
+
+    /**
+     * @return array
+     */
+    public function getTagsForSlider()
+    {
+        $toReturn = array();
+        foreach ($this->getPortfolioTags() as $tag)
+        {
+            if ($tag->getPortfolioTagCategory() && $tag->getPortfolioTagCategory()->getSlug() == 'camping')
+            {
+                $toReturn[] = $tag->getSlug();
+            }
+        }
+
+        return $toReturn;
     }
 }

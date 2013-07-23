@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MediaUsage
  *
- * @ORM\Table()
+ * @ORM\Table(name="portfolio_media_usage")
  * @ORM\Entity(repositoryClass="Bigfoot\Bundle\MediaBundle\Entity\MediaUsageRepository")
  */
 class MediaUsage
@@ -25,7 +25,7 @@ class MediaUsage
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="Media", inversedBy="usages")
-     * @ORM\Column(name="media_id", type="integer")
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
      */
     private $mediaId;
 

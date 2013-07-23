@@ -1,0 +1,106 @@
+<?php
+
+namespace Bigfoot\Bundle\MediaBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MediaMetadata
+ *
+ * @ORM\Table(name="portfolio_media_metadata")
+ * @ORM\Entity(repositoryClass="Bigfoot\Bundle\MediaBundle\Entity\MediaMetadataRepository")
+ */
+class MediaMetadata
+{
+    /**
+     * @var Media
+     *
+     * @ORM\ManyToOne(targetEntity="Media", fetch="EAGER")
+     * @ORM\Id
+     */
+    private $media;
+
+    /**
+     * @var Metadata
+     *
+     * @ORM\ManyToOne(targetEntity="Metadata", fetch="EAGER")
+     * @ORM\Id
+     */
+    private $metadata;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="value", type="string", length=255)
+     */
+    private $value;
+
+    /**
+     * Get media
+     *
+     * @return Media
+     */
+    public function getMedia()
+    {
+        return $this->media;
+    }
+
+    /**
+     * Set media
+     *
+     * @param Media $media
+     * @return MediaMetadata
+     */
+    public function setMedia(Media $media)
+    {
+        $this->media = $media;
+    
+        return $this;
+    }
+
+    /**
+     * Get metadata
+     *
+     * @return Metadata
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * Set metadata
+     *
+     * @param Metadata $metadata
+     * @return MediaMetadata
+     */
+    public function setMetadata(Metadata $metadata)
+    {
+        $this->metadata = $metadata;
+
+        return $this;
+    }
+
+    /**
+     * Get value
+     *
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Set metadata
+     *
+     * @param string $value
+     * @return MediaMetadata
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+}

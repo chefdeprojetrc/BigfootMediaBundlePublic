@@ -12,4 +12,62 @@ use Doctrine\ORM\EntityRepository;
  */
 class MediaRepository extends EntityRepository
 {
+    /**
+     * Set a metadata to a media
+     *
+     * @param Media the media
+     * @param string Metadata slug
+     * @param string Metadata value
+     * @return Media the media entity
+     */
+    public function setMetadata(Media $media, $slug, $value)
+    {
+        if ($metadatas = $media->getMetadatas() and array_key_exists($slug, $metadatas)) {
+            $mediaMetadata = $metadatas[$slug];
+        } else {
+            $em = $this->getEntityManager();
+            $metadataRepository = $em->getRepository('BigfootMediaBundle:Metadata');
+            $metadata = $metadataRepository->findOneBySlug($slug);
+
+            if (!$metadata) {
+                $allMetadatas = $metadataRepository->findAll();
+                $existingMetadatas = array();
+                foreach ($allMetadatas as $existingMetadata) {
+                    $existingMetadatas[] = $existingMetadata->getSlug();
+                }
+                throw new \Exception('Tring to add a "%s" metadata that does not exist. Existing values are (%s)', $slug, implode(', ', $existingMetadatas));
+            }
+
+            $mediaMetadata = new MediaMetadata();
+            $mediaMetadata->setMetadata($metadata);
+            $mediaMetadata->setMedia($media);
+
+            $media->addMetadata($mediaMetadata);
+        }
+
+        $mediaMetadata->setValue($value);
+
+        $media->resetSortedMetadatas();
+
+        return null;
+    }
+
+    /**
+     * Initializes metadatas for the given media.
+     * Checkouts the current list of possible metadatas and sets them to empty for the media if the association between media and metadata doesn't exist yet
+     *
+     * @param Media $media
+     */
+    public function initMetadata(Media $media)
+    {
+        $em = $this->getEntityManager();
+        $metadataRepo = $em->getRepository('BigfootMediaBundle:Metadata');
+        $allMetadatas = $metadataRepo->findAll();
+
+        foreach ($allMetadatas as $metadata) {
+            if (!$media->getMetadata($metadata->getSlug())) {
+                $this->setMetadata($media, $metadata->getSlug(), '');
+            }
+        }
+    }
 }

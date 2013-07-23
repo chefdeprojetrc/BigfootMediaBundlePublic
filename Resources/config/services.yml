@@ -1,2 +1,19 @@
 services:
-
+    kernel.listener.bigfoot_media_menu_listener:
+        class: Bigfoot\Bundle\MediaBundle\Listener\MenuListener
+        tags:
+            - { name: kernel.event_listener, event: bigfoot.menu.generate, method: onMenuGenerate }
+    form.type.portfolio_search:
+        class: Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchType
+        arguments: [ @doctrine.orm.entity_manager ]
+        tags:
+            - { name: form.type, alias: bigfoot_portfolio_search }
+    bigfoot.form.type.bigfoot_media_mediatype:
+        class: Bigfoot\Bundle\MediaBundle\Form\MediaType
+        arguments: [ @doctrine.orm.entity_manager ]
+        tags:
+            - { name: form.type, alias: bigfoot_media_mediatype }
+    bigfoot.form.type.bigfoot_media:
+        class: Bigfoot\Bundle\MediaBundle\Form\Type\BigfootMediaType
+        tags:
+            - { name: form.type, alias: bigfoot_media }
