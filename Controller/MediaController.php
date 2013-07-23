@@ -183,8 +183,8 @@ class MediaController extends ContainerAware
                 $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
 
                 $mediaRepository->setMetadata($media, 'title', $name);
-                $mediaRepository->setMetadata($media, 'width', $imageInfos[0].' px');
-                $mediaRepository->setMetadata($media, 'height', $imageInfos[1].' px');
+                $mediaRepository->setMetadata($media, 'width', $imageInfos[0]);
+                $mediaRepository->setMetadata($media, 'height', $imageInfos[1]);
                 $mediaRepository->setMetadata($media, 'size', $media->convertFileSize(filesize($absolutePath)));
 
                 $em->flush();

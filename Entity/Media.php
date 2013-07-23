@@ -273,7 +273,7 @@ class Media
      */
     public function removeTag(Tag $tag)
     {
-        $this->tags->remove($tag->getId());
+        $this->tags->removeElement($tag);
 
         return $this;
     }
