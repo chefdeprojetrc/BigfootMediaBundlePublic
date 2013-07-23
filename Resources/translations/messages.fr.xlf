@@ -3,8 +3,20 @@
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
             <trans-unit id="1">
-                <source>Symfony2 is great</source>
-                <target>J'aime Symfony2</target>
+                <source>Media Metadatas</source>
+                <target>Données associées aux médias</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>Add a metadata</source>
+                <target>Ajouter une donnée</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>Media Metadata creation</source>
+                <target>Création d'une donnée associée aux médias</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>Media Metadata edit</source>
+                <target>Edition d'une donnée associée aux médias</target>
             </trans-unit>
         </body>
     </file>
