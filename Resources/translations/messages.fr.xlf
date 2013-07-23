@@ -14,7 +14,7 @@
                 <source>Media Metadata creation</source>
                 <target>Création d'une donnée associée aux médias</target>
             </trans-unit>
-            <trans-unit id="3">
+            <trans-unit id="4">
                 <source>Media Metadata edit</source>
                 <target>Edition d'une donnée associée aux médias</target>
             </trans-unit>
