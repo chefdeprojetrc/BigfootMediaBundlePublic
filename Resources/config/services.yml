@@ -17,3 +17,8 @@ services:
         class: Bigfoot\Bundle\MediaBundle\Form\Type\BigfootMediaType
         tags:
             - { name: form.type, alias: bigfoot_media }
+    bigfoot.twig.media_extension:
+        class: Bigfoot\Bundle\MediaBundle\Twig\MediaExtension
+        arguments: [ @service_container ]
+        tags:
+            - { name: twig.extension }
