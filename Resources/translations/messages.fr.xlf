@@ -18,6 +18,34 @@
                 <source>Media Metadata edit</source>
                 <target>Edition d'une donnée associée aux médias</target>
             </trans-unit>
+            <trans-unit id="5">
+                <source>Thumbnail</source>
+                <target>Miniature</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Upload or select medias</source>
+                <target>Télécharger ou sélectionner des médias</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Associated medias</source>
+                <target>Médias sélectionnés</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Download new medias</source>
+                <target>Télécharger des médias</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Portfolio</source>
+                <target>Portfolio</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Search term</source>
+                <target>Mots clefs</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>Drag and drop your medias here</source>
+                <target>Déposez vos médias ici</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
