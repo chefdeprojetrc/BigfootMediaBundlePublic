@@ -35,7 +35,7 @@ class MediaRepository extends EntityRepository
                 foreach ($allMetadatas as $existingMetadata) {
                     $existingMetadatas[] = $existingMetadata->getSlug();
                 }
-                throw new \Exception('Tring to add a "%s" metadata that does not exist. Existing values are (%s)', $slug, implode(', ', $existingMetadatas));
+                throw new \Exception(sprintf('Tring to add a "%s" metadata that does not exist. Existing values are (%s)', $slug, implode(', ', $existingMetadatas)));
             }
 
             $mediaMetadata = new MediaMetadata();
