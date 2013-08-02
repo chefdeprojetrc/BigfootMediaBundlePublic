@@ -6,14 +6,14 @@
     <td>{{ line.getMetadata('size') }}</td>
     <td>{{ line.type }}</td>
     <td class="span1">
-        <a class="portfolio-toggle-edit on" href="{{ path('portfolio_edit', {id: line.id}) }}"><i class="icon-edit"></i></a>
-        <a class="portfolio-toggle-edit off" href="{{ path('portfolio_edit', {id: line.id}) }}" style="display:none"><i class="icon-remove"></i></a>
+        <a class="portfolio-toggle-edit on" href="{{ path('portfolio_edit', {id: line.id}) }}"><span class="glyphicon glyphicon-edit"></span></a>
+        <a class="portfolio-toggle-edit off" href="{{ path('portfolio_edit', {id: line.id}) }}" style="display:none"><span class="glyphicon glyphicon-remove"></span></a>
     </td>
     <td class="span1">
-        <a class="portfolio-toggle-use on" href="#"{% if used == false %} style="display:none"{% endif %}><i class="icon-star"></i></a>
-        <a class="portfolio-toggle-use off" href="#"{% if used == true %} style="display:none"{% endif %}><i class="icon-star-empty"></i></a>
+        <a class="portfolio-toggle-use on" href="#"{% if used == false %} style="display:none"{% endif %}><span class="glyphicon glyphicon-star"></span></a>
+        <a class="portfolio-toggle-use off" href="#"{% if used == true %} style="display:none"{% endif %}><span class="glyphicon glyphicon-star-empty"></span></a>
     </td>
     <td class="span1">
-        <a class="portfolio-media-delete" href="{{ path('portfolio_delete', {id: line.id}) }}"><i class="icon-trash"></i></a>
+        <a class="portfolio-media-delete" href="{{ path('portfolio_delete', {id: line.id}) }}"><span class="glyphicon glyphicon-trash"></span></a>
     </td>
 </tr>
