@@ -39,6 +39,7 @@ class MetadataController extends Controller
             'entities' => $entities,
         );
     }
+
     /**
      * Creates a new Metadata entity.
      *
@@ -145,6 +146,7 @@ class MetadataController extends Controller
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a Metadata entity.
      *

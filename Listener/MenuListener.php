@@ -5,8 +5,15 @@ namespace Bigfoot\Bundle\MediaBundle\Listener;
 use Bigfoot\Bundle\CoreBundle\Event\MenuEvent;
 use Bigfoot\Bundle\CoreBundle\Theme\Menu\Item;
 
+/**
+ * Class MenuListener
+ * @package Bigfoot\Bundle\MediaBundle\Listener
+ */
 class MenuListener
 {
+    /**
+     * @param MenuEvent $event
+     */
     public function onMenuGenerate(MenuEvent $event)
     {
         $menu = $event->getMenu();

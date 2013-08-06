@@ -6,6 +6,13 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Symfony\Component\DependencyInjection\Container;
 
+/**
+ * Helper filter facilitating the display of an image from the portfolio.
+ * Converts an id or list of id separated with commas by the relative path to the first media found.
+ *
+ * Class MediaExtension
+ * @package Bigfoot\Bundle\MediaBundle\Twig
+ */
 class MediaExtension extends \Twig_Extension
 {
     /**
@@ -13,11 +20,17 @@ class MediaExtension extends \Twig_Extension
      */
     private $container;
 
+    /**
+     * @param Container $container
+     */
     public function __construct(Container $container)
     {
         $this->container = $container;
     }
 
+    /**
+     * @return array
+     */
     public function getFilters()
     {
         return array(
@@ -25,6 +38,10 @@ class MediaExtension extends \Twig_Extension
         );
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
     public function mediaFilter($value)
     {
         $ids = explode(',', $value);
@@ -40,6 +57,9 @@ class MediaExtension extends \Twig_Extension
         return sprintf('%s/%s', $request->getBasePath(), $media->getFile());
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'media';

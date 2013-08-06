@@ -6,6 +6,10 @@ use Bigfoot\Bundle\MediaBundle\Entity\Metadata;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Class LoadMetadataData
+ * @package Bigfoot\Bundle\UserBundle\DataFixtures\ORM
+ */
 class LoadMetadataData implements FixtureInterface
 {
     /**
@@ -42,6 +46,9 @@ class LoadMetadataData implements FixtureInterface
         $manager->flush();
     }
 
+    /**
+     * @return int
+     */
     public function getOrder()
     {
         return 5;

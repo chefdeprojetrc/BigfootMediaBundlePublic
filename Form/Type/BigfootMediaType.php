@@ -9,6 +9,14 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Helper type allowing to use the media portfolio popin in a form to fill in a media field.
+ *
+ * The corresponding entity attribute must be of type string (values are saved as a list of ids separated by a comma).
+ *
+ * Class BigfootMediaType
+ * @package Bigfoot\Bundle\MediaBundle\Form\Type
+ */
 class BigfootMediaType extends AbstractType
 {
     /**
@@ -22,24 +30,11 @@ class BigfootMediaType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function() {
-
-        });
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view
-            ->vars['multipart'] = true
-        ;
+        $view->vars['multipart'] = true;
     }
 
     /**

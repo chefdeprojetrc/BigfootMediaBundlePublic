@@ -8,10 +8,20 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class PortfolioSearchType
+ * @package Bigfoot\Bundle\MediaBundle\Form
+ */
 class PortfolioSearchType extends AbstractType
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
     private $em;
 
+    /**
+     * @param EntityManager $entityManager
+     */
     public function __construct(EntityManager $entityManager)
     {
         $this->em = $entityManager;
@@ -73,6 +83,9 @@ class PortfolioSearchType extends AbstractType
         ));
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'bigfoot_portfolio_search';
