@@ -21,6 +21,7 @@ class MetadataType extends AbstractType
         $builder
             ->add('name')
             ->add('slug')
+            ->add('translation', 'translatable_entity')
         ;
     }
 

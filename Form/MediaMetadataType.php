@@ -20,6 +20,7 @@ class MediaMetadataType extends AbstractType
     {
         $builder
             ->add('value')
+            ->add('translation', 'translatable_entity')
         ;
     }
 

@@ -2,69 +2,61 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Controller;
 
-use Bigfoot\Bundle\CoreBundle\Theme\Menu\Item;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Bigfoot\Bundle\CoreBundle\Crud\CrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Bigfoot\Bundle\MediaBundle\Entity\Metadata;
-use Bigfoot\Bundle\MediaBundle\Form\MetadataType;
 
 /**
  * Metadata controller.
  *
  * @Route("/admin/portfolio_metadata")
  */
-class MetadataController extends Controller
+class MetadataController extends CrudController
 {
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return 'admin_portfolio_metadata';
+    }
 
+    /**
+     * @return string
+     */
+    protected function getEntity()
+    {
+        return 'BigfootMediaBundle:Metadata';
+    }
+
+    protected function getFields()
+    {
+        return array('id' => 'ID');
+    }
     /**
      * Lists all Metadata entities.
      *
      * @Route("/", name="admin_portfolio_metadata")
      * @Method("GET")
-     * @Template()
+     * @Template("BigfootCoreBundle:crud:index.html.twig")
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('BigfootMediaBundle:Metadata')->findAll();
-
-        $theme = $this->container->get('bigfoot.theme');
-        $theme['page_content']['globalActions']->addItem(new Item('crud_add', 'Add a metadata', 'admin_portfolio_metadata_new'));
-
-        return array(
-            'entities' => $entities,
-        );
+        return $this->doIndex();
     }
-
     /**
      * Creates a new Metadata entity.
      *
      * @Route("/", name="admin_portfolio_metadata_create")
      * @Method("POST")
-     * @Template("BigfootMediaBundle:Metadata:new.html.twig")
+     * @Template("BigfootCoreBundle:crud:new.html.twig")
      */
     public function createAction(Request $request)
     {
-        $entity  = new Metadata();
-        $form = $this->createForm(new MetadataType(), $entity);
-        $form->submit($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('admin_portfolio_metadata'));
-        }
-
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+        return $this->doCreate($request);
     }
 
     /**
@@ -72,17 +64,12 @@ class MetadataController extends Controller
      *
      * @Route("/new", name="admin_portfolio_metadata_new")
      * @Method("GET")
-     * @Template()
+     * @Template("BigfootCoreBundle:crud:new.html.twig")
      */
     public function newAction()
     {
-        $entity = new Metadata();
-        $form   = $this->createForm(new MetadataType(), $entity);
 
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+        return $this->doNew();
     }
 
     /**
@@ -90,26 +77,12 @@ class MetadataController extends Controller
      *
      * @Route("/{id}/edit", name="admin_portfolio_metadata_edit")
      * @Method("GET")
-     * @Template()
+     * @Template("BigfootCoreBundle:crud:edit.html.twig")
      */
     public function editAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('BigfootMediaBundle:Metadata')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Metadata entity.');
-        }
-
-        $editForm = $this->createForm(new MetadataType(), $entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return $this->doEdit($id);
     }
 
     /**
@@ -117,36 +90,13 @@ class MetadataController extends Controller
      *
      * @Route("/{id}", name="admin_portfolio_metadata_update")
      * @Method("PUT")
-     * @Template("BigfootMediaBundle:Metadata:edit.html.twig")
+     * @Template("BigfootCoreBundle:crud:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('BigfootMediaBundle:Metadata')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Metadata entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createForm(new MetadataType(), $entity);
-        $editForm->submit($request);
-
-        if ($editForm->isValid()) {
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('admin_portfolio_metadata_edit', array('id' => $id)));
-        }
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return $this->doUpdate($request, $id);
     }
-
     /**
      * Deletes a Metadata entity.
      *
@@ -155,36 +105,7 @@ class MetadataController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->submit($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('BigfootMediaBundle:Metadata')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Metadata entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-        }
-
-        return $this->redirect($this->generateUrl('admin_portfolio_metadata'));
-    }
-
-    /**
-     * Creates a form to delete a Metadata entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder(array('id' => $id))
-            ->add('id', 'hidden')
-            ->getForm()
-        ;
-    }
+    return $this->doDelete($request, $id);
+}
 }

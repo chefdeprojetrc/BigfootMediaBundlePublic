@@ -45,6 +45,10 @@ class Metadata
      */
     private $mediaMetadata;
 
+    /**
+     * @Gedmo\Locale
+     */
+    private $locale;
 
     /**
      * Get id
@@ -100,5 +104,13 @@ class Metadata
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * @param $locale
+     */
+    public function setTranslatableLocale($locale)
+    {
+        $this->locale = $locale;
     }
 }
