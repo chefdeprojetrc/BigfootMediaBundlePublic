@@ -43,6 +43,12 @@ class LoadMetadataData implements FixtureInterface
 
         $manager->persist($size);
 
+        $repository = $manager->getRepository('Gedmo\\Translatable\\Entity\\Translation');
+        $repository->translate($title   , 'name', 'fr', 'Titre');
+        $repository->translate($width   , 'name', 'fr', 'Largeur');
+        $repository->translate($height  , 'name', 'fr', 'Hauteur');
+        $repository->translate($size    , 'name', 'fr', 'Taille');
+
         $manager->flush();
     }
 
