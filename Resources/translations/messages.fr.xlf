@@ -46,6 +46,22 @@
                 <source>Drag and drop your medias here</source>
                 <target>Déposez vos médias ici</target>
             </trans-unit>
+            <trans-unit id="12">
+                <source>Metadatas admin</source>
+                <target>Administration des metadata</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>Metadata edit</source>
+                <target>Edition d'une metadata</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>Metadata creation</source>
+                <target>Création d'une metadata</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>Metadata management</source>
+                <target>Gestion des metadatas</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
