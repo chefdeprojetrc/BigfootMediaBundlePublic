@@ -18,8 +18,8 @@ class MenuListener
     {
         $menu = $event->getMenu();
         if ('sidebar_menu' == $menu->getName()) {
-            $media = new Item('sidebar_settings_media', 'Media');
-            $media->addChild(new Item('sidebar_settings_media_metadata', 'Metadata management', 'admin_portfolio_metadata'));
+            $media = new Item('sidebar_settings_media', 'Media', null, array(), array(), 'picture');
+            $media->addChild(new Item('sidebar_settings_media_metadata', 'Metadata', 'admin_portfolio_metadata', array(), array(), 'list'));
             $menu->addOnItem('sidebar_settings', $media);
         }
     }
