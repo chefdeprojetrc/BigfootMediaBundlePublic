@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Container;
  * Class MediasExtension
  * @package Bigfoot\Bundle\MediaBundle\Twig
  */
-class MediaExtension extends \Twig_Extension
+class MediasExtension extends \Twig_Extension
 {
     /**
      * @var \Symfony\Component\DependencyInjection\Container
