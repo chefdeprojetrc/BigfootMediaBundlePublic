@@ -8,9 +8,7 @@ use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Helper filter facilitating the display of an image from the portfolio.
- * Converts an id or list of id separated with commas by the relative path to the first media found.
- *
- * Class MediaExtension
+ * Class MediasExtension
  * @package Bigfoot\Bundle\MediaBundle\Twig
  */
 class MediaExtension extends \Twig_Extension
@@ -34,7 +32,7 @@ class MediaExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('media', array($this, 'mediaFilter'))
+            new \Twig_SimpleFilter('medias', array($this, 'mediasFilter'))
         );
     }
 
@@ -42,14 +40,19 @@ class MediaExtension extends \Twig_Extension
      * @param $value
      * @return string
      */
-    public function mediaFilter($value)
+    public function mediasFilter($value)
     {
         $ids = explode(';',$value);
         $em = $this->container->get('doctrine')->getManager();
         $request = $this->container->get('request');
-        $result = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findOneBy(array('id' => $ids));
+        $result = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
+        $tabMedia = array();
 
-        return sprintf('%s/%s', $request->getBasePath(), $result->getFile());
+        foreach ($result as $media) {
+            $tabMedia[] = sprintf('%s/%s', $request->getBasePath(), $media->getFile());
+        }
+
+        return $tabMedia;
     }
 
     /**
@@ -57,6 +60,6 @@ class MediaExtension extends \Twig_Extension
      */
     public function getName()
     {
-        return 'media';
+        return 'medias';
     }
 }
