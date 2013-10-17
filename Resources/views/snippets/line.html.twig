@@ -5,12 +5,12 @@
     {#<span>{{ line.getMetadata('width') }}px</span></td>#}
     {#<span>{{ line.getMetadata('size') }}</span>#}
     {#<span>{{ line.type }}</span>#}
+    <p>
+        <a class="portfolio-toggle-edit on" href="{{ path('portfolio_edit', {id: line.id}) }}"><i class="icon-edit bigger-200"></i> Editer</a>&nbsp;
+        <a class="portfolio-toggle-edit off" href="{{ path('portfolio_edit', {id: line.id}) }}" style="display:none"><i class="icon-edit bigger-200"></i></a>&nbsp;
+        <a class="portfolio-toggle-use on" href="#"{% if used == false %} style="display:none"{% endif %}><i class="icon-check bigger-200"></i> Choisir</a>&nbsp;
+        <a class="portfolio-toggle-use off" href="#"{% if used == true %} style="display:none"{% endif %}><i class="icon-check-empty bigger-200"></i> Choisir</a>&nbsp;
+        <a class="portfolio-media-delete" href="{{ path('portfolio_delete', {id: line.id}) }}"><i class="icon-trash bigger-200"></i> Supprimer</a>
+    </p>
+    <hr>
 </div>
-<hr>
-<p>
-    <a class="portfolio-toggle-edit on" href="{{ path('portfolio_edit', {id: line.id}) }}"><i class="icon-edit bigger-200"></i></a>&nbsp;
-    <a class="portfolio-toggle-edit off" href="{{ path('portfolio_edit', {id: line.id}) }}" style="display:none"><i class="icon-edit bigger-200"></i></a>&nbsp;
-    <a class="portfolio-toggle-use on" href="#"{% if used == false %} style="display:none"{% endif %}><i class="icon-heart bigger-200"></i></a>&nbsp;
-    <a class="portfolio-toggle-use off" href="#"{% if used == true %} style="display:none"{% endif %}><i class="icon-heart-empty bigger-200"></i></a>&nbsp;
-    <a class="portfolio-media-delete" href="{{ path('portfolio_delete', {id: line.id}) }}"><i class="icon-trash bigger-200"></i></a>
-</p>
