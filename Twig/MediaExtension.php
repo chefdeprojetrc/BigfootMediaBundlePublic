@@ -44,17 +44,17 @@ class MediaExtension extends \Twig_Extension
      */
     public function mediaFilter($value)
     {
-        $ids = explode(',', $value);
-
+        $ids = explode(';',$value);
         $em = $this->container->get('doctrine')->getManager();
         $request = $this->container->get('request');
+        $result = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
+        $tabMedia = array();
 
-        $query = $em
-            ->createQuery('SELECT m FROM Bigfoot\Bundle\MediaBundle\Entity\Media m WHERE m.id IN (:ids)')
-            ->setParameter('ids', $ids);
-        $media = $query->getOneOrNullResult();
+        foreach ($result as $media) {
+            $tabMedia[] = sprintf('%s/%s', $request->getBasePath(), $media->getFile());
+        }
 
-        return sprintf('%s/%s', $request->getBasePath(), $media->getFile());
+        return $tabMedia;
     }
 
     /**
