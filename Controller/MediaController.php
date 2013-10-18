@@ -76,6 +76,8 @@ class MediaController extends ContainerAware
     public function editAction(Request $request, $id)
     {
         $em = $this->container->get('doctrine')->getManager();
+        $theme = $this->container->get('bigfoot.theme');
+        $themeBundle = $theme->getTwigNamespace();
 
         $media = $this->getMedia($id);
         $file = $media->getFile();
@@ -94,7 +96,7 @@ class MediaController extends ContainerAware
                     'id'        => $id,
                     'success'   => true,
                     'object'    => $media,
-                    'html'      => $this->container->get('twig')->render('BigfootMediaBundle:snippets:table_line.html.twig', array(
+                    'html'      => $this->container->get('twig')->render($themeBundle.':snippets:table_line.html.twig', array(
                         'line' => $media,
                         'used' => false,
                     )),
@@ -103,7 +105,7 @@ class MediaController extends ContainerAware
         }
 
         return new Response(json_encode(array(
-            'html'  => $this->container->get('twig')->render('BigfootMediaBundle:snippets:edit.html.twig', array(
+            'html'  => $this->container->get('twig')->render($themeBundle.':snippets:edit.html.twig', array(
                 'form'  => $form->createView(),
                 'media' => $media,
                 'id'    => $id,
@@ -256,46 +258,54 @@ class MediaController extends ContainerAware
      */
     public function searchAction(Request $request)
     {
+        $arrayParams = array();
         $ids = $request->get('ids');
+        $theme = $this->container->get('bigfoot.theme');
+        $themeBundle = $theme->getTwigNamespace();
 
         $searchData = new PortfolioSearchData();
-        $searchForm = $this->container->get('form.factory')->create('bigfoot_portfolio_search');
+        $searchForm = $this->container->get('form.factory')->create('bigfoot_portfolio_search', $searchData);
 
         $searchForm->submit($request);
+
         if ($searchForm->isValid()) {
             if ($searchData->getSearch()) {
                 $queryString = sprintf('%%%s%%', $searchData->getSearch());
+
+                $arrayParams[':queryString'] = $queryString;
 
                 $em = $this->container->get('doctrine')->getManager();
                 $queryBuilder = $em->createQueryBuilder()
                     ->select('DISTINCT m')
                     ->from('BigfootMediaBundle:Media', 'm')
-                    ->join('BigfootMediaBundle:MediaMetadata')
-                    ->join('BigfootMediaBundle:Metadata', 'md')
-                    ->leftJoin('BigfootCoreBundle:Tag', 't')
-                    ->where('md.value LIKE :queryString OR m.file LIKE :queryString OR t.name LIKE :queryString')
-                    ->addParameter('queryString', $queryString)
-                ;
+                    ->join('m.metadatas', 'md')
+                    ->leftJoin('m.tags', 't')
+                    ->where('md.value LIKE :queryString OR m.file LIKE :queryString OR t.name LIKE :queryString');
 
                 if ($table = $searchData->getTable()) {
                     $queryBuilder
-                        ->join('BigfootMediaBundle:MediaUsage', 'mu')
-                        ->andWhere('mu.tableRef = :table')
-                        ->addParameter('table', $table);
+                        ->join('m.usages', 'mu')
+                        ->andWhere('mu.tableRef = :table');
+
+                    $arrayParams[':table'] = $table;
 
                     if ($column = $searchData->getColumn()) {
+                        $arrayParams[':column'] = $column;
                         $queryBuilder
-                            ->andWhere('mu.column_ref = :column')
-                            ->addParameter('column', $column);
+                            ->andWhere('mu.column_ref = :column');
                     }
                 }
 
-                $selectedMedias = $queryBuilder->getQuery()->getResult();
+                $query = $queryBuilder->getQuery();
+
+                $query->setParameters($arrayParams);
+
+                $selectedMedias = $query->getResult();
 
                 return new Response(json_encode(array(
                     'success' => true,
-                    'html' => $this->container->get('twig')->render('Crud/Portfolio/table.twig', array(
-                        'paginator' => $selectedMedias,
+                    'html' => $this->container->get('twig')->render($themeBundle.':snippets:table.html.twig', array(
+                        'allMedias' => $selectedMedias,
                         'mediaIds' => explode(';', $ids),
                     )),
                 )), 200, array('Content-Type', 'application/json'));
@@ -303,6 +313,9 @@ class MediaController extends ContainerAware
 
             return new Response(json_encode(array(
                 'success' => false,
+                'html' => $this->container->get('twig')->render($themeBundle.':snippets:table.html.twig', array(
+                    'allMedias' => '',
+                )),
             )), 200, array('Content-Type', 'application/json'));
         }
     }

@@ -1,7 +1,0 @@
-{% for line in allMedias %}
-    {% set used = false %}
-    {% if line.id in mediaIds %}
-        {% set used = true %}
-    {% endif %}
-    {% include 'BigfootMediaBundle:snippets:line.html.twig' with {'line': line, 'used': used} %}
-{% endfor %}
