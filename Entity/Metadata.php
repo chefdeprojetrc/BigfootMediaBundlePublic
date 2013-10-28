@@ -107,7 +107,7 @@ class Metadata
     }
 
     /**
-     * @param $locale
+     * @param $locale The object's locale.
      */
     public function setTranslatableLocale($locale)
     {
