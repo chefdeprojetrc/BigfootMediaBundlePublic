@@ -4,6 +4,8 @@ namespace Bigfoot\Bundle\MediaBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -19,6 +21,18 @@ class MediaMetadataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+                $data = $event->getData();
+                $form = $event->getForm();
+
+                if (!$data) {
+                    return null;
+                }
+
+                $form->add('value', 'text', array(
+                    'label' => $data->getType(),
+                ));
+            })
             ->add('value')
             ->add('translation', 'translatable_entity')
         ;

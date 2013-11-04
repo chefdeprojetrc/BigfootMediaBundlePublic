@@ -34,8 +34,10 @@ class MediaType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $em = $this->entityManager;
+
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($em) {
                 $data = $event->getData();
                 $form = $event->getForm();
 
@@ -43,7 +45,7 @@ class MediaType extends AbstractType
                     return null;
                 }
 
-                $mediaRepo = $this->entityManager->getRepository('BigfootMediaBundle:Media');
+                $mediaRepo = $em->getRepository('BigfootMediaBundle:Media');
                 $mediaRepo->initMetadata($data);
 
                 $form->add('metadatas', 'collection', array(
@@ -53,7 +55,9 @@ class MediaType extends AbstractType
                     ),
                 ));
             })
-            ->add('tags', 'bigfoot_tag')
+            ->add('tags', 'bigfoot_tag', array(
+                'label' => 'Tags',
+            ))
         ;
     }
 

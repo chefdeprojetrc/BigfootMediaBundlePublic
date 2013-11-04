@@ -32,9 +32,27 @@ class MediaMetadata
     /**
      * @var string
      *
-     * @ORM\Column(name="value", type="string", length=255)
+     * @ORM\Column(name="value", type="string", length=255, nullable=true)
      */
     private $value;
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Returns the metadata type (name of underlying metadata object)
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->metadata->getName();
+    }
 
     /**
      * Get media

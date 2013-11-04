@@ -170,8 +170,7 @@ class MediaController extends ContainerAware
         if (file_put_contents($absolutePath, $decodedData)) {
             $relativePath = $this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir').$image;
             $imageInfos   = getimagesize($absolutePath);
-            if ($imageInfos['channels'] == 3) { // channels sera 3 pour des images RGB et 4 pour des images CMYK.
-
+            if (!isset($imageInfos['channels']) or $imageInfos['channels'] == 3) { // channels sera 3 pour des images RGB et 4 pour des images CMYK.
                 $media
                     ->setType($imageInfos['mime'])
                     ->setFile($relativePath)
@@ -198,7 +197,6 @@ class MediaController extends ContainerAware
                 ));
             } else {
                 $json['html'] = $this->container->get('twig')->render('BigfootMediaBundle:snippets:unused.html.twig');
-
                 unlink($absolutePath);
             }
         }
@@ -269,47 +267,47 @@ class MediaController extends ContainerAware
         $searchForm->submit($request);
 
         if ($searchForm->isValid()) {
+
+            $em = $this->container->get('doctrine')->getManager();
+            $queryBuilder = $em->createQueryBuilder()
+                ->select('DISTINCT m')
+                ->from('BigfootMediaBundle:Media', 'm')
+                ->leftJoin('m.metadatas', 'md')
+                ->leftJoin('m.tags', 't');
+
             if ($searchData->getSearch()) {
                 $queryString = sprintf('%%%s%%', $searchData->getSearch());
-
                 $arrayParams[':queryString'] = $queryString;
-
-                $em = $this->container->get('doctrine')->getManager();
-                $queryBuilder = $em->createQueryBuilder()
-                    ->select('DISTINCT m')
-                    ->from('BigfootMediaBundle:Media', 'm')
-                    ->join('m.metadatas', 'md')
-                    ->leftJoin('m.tags', 't')
-                    ->where('md.value LIKE :queryString OR m.file LIKE :queryString OR t.name LIKE :queryString');
-
-                if ($table = $searchData->getTable()) {
-                    $queryBuilder
-                        ->join('m.usages', 'mu')
-                        ->andWhere('mu.tableRef = :table');
-
-                    $arrayParams[':table'] = $table;
-
-                    if ($column = $searchData->getColumn()) {
-                        $arrayParams[':column'] = $column;
-                        $queryBuilder
-                            ->andWhere('mu.column_ref = :column');
-                    }
-                }
-
-                $query = $queryBuilder->getQuery();
-
-                $query->setParameters($arrayParams);
-
-                $selectedMedias = $query->getResult();
-
-                return new Response(json_encode(array(
-                    'success' => true,
-                    'html' => $this->container->get('twig')->render($themeBundle.':snippets:table.html.twig', array(
-                        'allMedias' => $selectedMedias,
-                        'mediaIds' => explode(';', $ids),
-                    )),
-                )), 200, array('Content-Type', 'application/json'));
+                $queryBuilder->where('md.value LIKE :queryString OR m.file LIKE :queryString OR t.name LIKE :queryString');
             }
+
+            if ($table = $searchData->getTable()) {
+                $queryBuilder
+                    ->join('m.usages', 'mu')
+                    ->andWhere('mu.tableRef = :table');
+
+                $arrayParams[':table'] = $table;
+
+                if ($column = $searchData->getColumn()) {
+                    $arrayParams[':column'] = $column;
+                    $queryBuilder
+                        ->andWhere('mu.column_ref = :column');
+                }
+            }
+
+            $query = $queryBuilder->getQuery();
+
+            $query->setParameters($arrayParams);
+
+            $selectedMedias = $query->getResult();
+
+            return new Response(json_encode(array(
+                'success' => true,
+                'html' => $this->container->get('twig')->render($themeBundle.':snippets:table.html.twig', array(
+                    'allMedias' => $selectedMedias,
+                    'mediaIds' => explode(';', $ids),
+                )),
+            )), 200, array('Content-Type', 'application/json'));
 
             return new Response(json_encode(array(
                 'success' => false,
