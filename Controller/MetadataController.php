@@ -7,10 +7,12 @@ use Bigfoot\Bundle\CoreBundle\Crud\CrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 /**
  * Metadata controller.
  *
+ * @Cache(maxage="0", smaxage="0", public="false")
  * @Route("/admin/portfolio_metadata")
  */
 class MetadataController extends CrudController
@@ -33,7 +35,10 @@ class MetadataController extends CrudController
 
     protected function getFields()
     {
-        return array('id' => 'ID');
+        return array(
+            'id' => 'ID',
+            'name' => 'Name',
+        );
     }
     /**
      * Lists all Metadata entities.
