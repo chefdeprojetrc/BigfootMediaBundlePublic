@@ -49,6 +49,10 @@ class MediaExtension extends \Twig_Extension
         $request = $this->container->get('request');
         $result = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findOneBy(array('id' => $ids));
 
+        if (!$result) {
+            return '';
+        }
+
         return sprintf('%s/%s', $request->getBasePath(), $result->getFile());
     }
 
