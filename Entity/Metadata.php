@@ -107,6 +107,24 @@ class Metadata
     }
 
     /**
+     * @param \Bigfoot\Bundle\MediaBundle\Entity\MediaMetadata $mediaMetadata
+     */
+    public function setMediaMetadata($mediaMetadata)
+    {
+        $this->mediaMetadata = $mediaMetadata;
+
+        return $this;
+    }
+
+    /**
+     * @return \Bigfoot\Bundle\MediaBundle\Entity\MediaMetadata
+     */
+    public function getMediaMetadata()
+    {
+        return $this->mediaMetadata;
+    }
+
+    /**
      * @param $locale The object's locale.
      */
     public function setTranslatableLocale($locale)

@@ -16,7 +16,7 @@ class MediaMetadata
     /**
      * @var Media
      *
-     * @ORM\ManyToOne(targetEntity="Media", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="Media", inversedBy="metadatas", fetch="EAGER")
      * @ORM\Id
      */
     private $media;
@@ -24,7 +24,7 @@ class MediaMetadata
     /**
      * @var Metadata
      *
-     * @ORM\ManyToOne(targetEntity="Metadata", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="Metadata", inversedBy="mediaMetadata", fetch="EAGER")
      * @ORM\Id
      */
     private $metadata;
