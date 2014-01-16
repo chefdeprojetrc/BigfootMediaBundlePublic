@@ -2,18 +2,19 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Controller;
 
-use Bigfoot\Bundle\CoreBundle\Entity\Tag;
-use Bigfoot\Bundle\MediaBundle\Entity\Media;
-use Bigfoot\Bundle\MediaBundle\Form\MediaType;
-use Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchData;
-use Doctrine\ORM\AbstractQuery;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Doctrine\ORM\AbstractQuery;
+
+use Bigfoot\Bundle\CoreBundle\Controller\BaseController;
+use Bigfoot\Bundle\CoreBundle\Entity\Tag;
+use Bigfoot\Bundle\MediaBundle\Entity\Media;
+use Bigfoot\Bundle\MediaBundle\Form\MediaType;
+use Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchData;
 
 /**
  * Bigfoot MediaController. Implements the routes necessary to display the media management module.
@@ -21,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @Cache(maxage="0", smaxage="0", public="false")
  * @Route("/portfolio")
  */
-class MediaController extends ContainerAware
+class MediaController extends BaseController
 {
     /**
      * Displays the list of persisted medias.
