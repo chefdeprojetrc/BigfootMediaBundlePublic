@@ -2,25 +2,45 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Listener;
 
+use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 use Bigfoot\Bundle\CoreBundle\Event\MenuEvent;
-use Bigfoot\Bundle\CoreBundle\Theme\Menu\Item;
 
 /**
- * Class MenuListener
- * @package Bigfoot\Bundle\MediaBundle\Listener
+ * Menu Listener
  */
-class MenuListener
+class MenuListener implements EventSubscriberInterface
 {
     /**
-     * @param MenuEvent $event
+     * Get subscribed events
+     *
+     * @return array
      */
-    public function onMenuGenerate(MenuEvent $event)
+    public static function getSubscribedEvents()
     {
-        $menu = $event->getMenu();
-        if ('sidebar_menu' == $menu->getName()) {
-            $media = new Item('sidebar_settings_media', 'Media', null, array(), array(), 'picture');
-            $media->addChild(new Item('sidebar_settings_media_metadata', 'Metadata', 'admin_portfolio_metadata', array(), array(), 'list'));
-            $menu->addOnItem('sidebar_settings', $media);
-        }
+        return array(
+            MenuEvent::GENERATE_MAIN => 'onGenerateMain',
+        );
+    }
+
+    /**
+     * @param GenericEvent $event
+     */
+    public function onGenerateMain(GenericEvent $event)
+    {
+        $menu      = $event->getSubject();
+        $mediaMenu = $menu->getChild('media');
+
+        $mediaMenu->addChild(
+            'metadata',
+            array(
+                'label'  => 'Metadata',
+                'route'  => 'admin_portfolio_metadata',
+                'linkAttributes' => array(
+                    'icon' => 'list',
+                )
+            )
+        );
     }
 }

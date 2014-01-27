@@ -1,8 +1,4 @@
 services:
-    kernel.listener.bigfoot_media_menu_listener:
-        class: Bigfoot\Bundle\MediaBundle\Listener\MenuListener
-        tags:
-            - { name: kernel.event_listener, event: bigfoot.menu.generate, method: onMenuGenerate }
     form.type.portfolio_search:
         class: Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchType
         arguments: [ @doctrine.orm.entity_manager ]
@@ -27,3 +23,9 @@ services:
             arguments: [ @service_container ]
             tags:
                 - { name: twig.extension }
+
+    # Menu Listener
+    bigfoot_media.listener.menu:
+        class: Bigfoot\Bundle\MediaBundle\Listener\MenuListener
+        tags:
+            - { name: kernel.event_subscriber }
