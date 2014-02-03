@@ -37,6 +37,12 @@ class MenuListener implements EventSubscriberInterface
             array(
                 'label'  => 'Metadata',
                 'route'  => 'admin_portfolio_metadata',
+                'extras' => array(
+                    'routes' => array(
+                        'admin_portfolio_metadata_new',
+                        'admin_portfolio_metadata_edit'
+                    )
+                ),
                 'linkAttributes' => array(
                     'icon' => 'list',
                 )

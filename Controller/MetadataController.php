@@ -46,7 +46,7 @@ class MetadataController extends CrudController
      *
      * @Route("/", name="admin_portfolio_metadata")
      * @Method("GET")
-     * @Template("BigfootCoreBundle:crud:index.html.twig")
+     * @Template("BigfootCoreBundle:Crud:index.html.twig")
      */
     public function indexAction()
     {
@@ -57,7 +57,7 @@ class MetadataController extends CrudController
      *
      * @Route("/", name="admin_portfolio_metadata_create")
      * @Method("POST")
-     * @Template("BigfootCoreBundle:crud:new.html.twig")
+     * @Template("BigfootCoreBundle:Crud:form.html.twig")
      */
     public function createAction(Request $request)
     {
@@ -70,7 +70,7 @@ class MetadataController extends CrudController
      *
      * @Route("/new", name="admin_portfolio_metadata_new")
      * @Method("GET")
-     * @Template("BigfootCoreBundle:crud:new.html.twig")
+     * @Template("BigfootCoreBundle:Crud:form.html.twig")
      */
     public function newAction()
     {
@@ -83,7 +83,7 @@ class MetadataController extends CrudController
      *
      * @Route("/{id}/edit", name="admin_portfolio_metadata_edit")
      * @Method("GET")
-     * @Template("BigfootCoreBundle:crud:edit.html.twig")
+     * @Template("BigfootCoreBundle:Crud:form.html.twig")
      */
     public function editAction($id)
     {
@@ -96,7 +96,7 @@ class MetadataController extends CrudController
      *
      * @Route("/{id}", name="admin_portfolio_metadata_update")
      * @Method("PUT")
-     * @Template("BigfootCoreBundle:crud:edit.html.twig")
+     * @Template("BigfootCoreBundle:Crud:form.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
