@@ -37,7 +37,7 @@ class MetadataController extends CrudController
     protected function getFields()
     {
         return array(
-            'id' => 'ID',
+            'id'   => 'ID',
             'name' => 'Name',
         );
     }
@@ -46,7 +46,6 @@ class MetadataController extends CrudController
      *
      * @Route("/", name="admin_portfolio_metadata")
      * @Method("GET")
-     * @Template("BigfootCoreBundle:Crud:index.html.twig")
      */
     public function indexAction()
     {
@@ -57,11 +56,9 @@ class MetadataController extends CrudController
      *
      * @Route("/", name="admin_portfolio_metadata_create")
      * @Method("POST")
-     * @Template("BigfootCoreBundle:Crud:form.html.twig")
      */
     public function createAction(Request $request)
     {
-
         return $this->doCreate($request);
     }
 
@@ -70,11 +67,9 @@ class MetadataController extends CrudController
      *
      * @Route("/new", name="admin_portfolio_metadata_new")
      * @Method("GET")
-     * @Template("BigfootCoreBundle:Crud:form.html.twig")
      */
     public function newAction()
     {
-
         return $this->doNew();
     }
 
@@ -83,11 +78,9 @@ class MetadataController extends CrudController
      *
      * @Route("/{id}/edit", name="admin_portfolio_metadata_edit")
      * @Method("GET")
-     * @Template("BigfootCoreBundle:Crud:form.html.twig")
      */
     public function editAction($id)
     {
-
         return $this->doEdit($id);
     }
 
@@ -96,22 +89,19 @@ class MetadataController extends CrudController
      *
      * @Route("/{id}", name="admin_portfolio_metadata_update")
      * @Method("PUT")
-     * @Template("BigfootCoreBundle:Crud:form.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
-
         return $this->doUpdate($request, $id);
     }
     /**
      * Deletes a Metadata entity.
      *
      * @Route("/{id}", name="admin_portfolio_metadata_delete")
-     * @Method("DELETE")
+     * @Method("GET|DELETE")
      */
     public function deleteAction(Request $request, $id)
     {
-
-    return $this->doDelete($request, $id);
-}
+        return $this->doDelete($request, $id);
+    }
 }
