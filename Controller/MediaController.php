@@ -168,7 +168,13 @@ class MediaController extends BaseController
 
         // generate new name, relative and absolute path
         $image = uniqid().'_'.preg_replace('/\s+/', '_', $name);
-        $absolutePath = $this->container->get('kernel')->getRootDir() . '/../web/'.$this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir').$image;
+        $directory = $this->container->get('kernel')->getRootDir() . '/../web/'.$this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir');
+        $absolutePath = $directory.$image;
+
+        if (!file_exists($directory)) {
+            $filesystem = $this->get('filesystem');
+            $filesystem->mkdir($directory, 0777);
+        }
 
         if (file_put_contents($absolutePath, $decodedData)) {
             $relativePath = $this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir').$image;
