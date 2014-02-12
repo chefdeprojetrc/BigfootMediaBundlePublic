@@ -37,7 +37,7 @@ class MetadataController extends CrudController
     protected function getFields()
     {
         return array(
-            'id' => 'ID',
+            'id'   => 'ID',
             'name' => 'Name',
         );
     }
@@ -46,7 +46,6 @@ class MetadataController extends CrudController
      *
      * @Route("/", name="admin_portfolio_metadata")
      * @Method("GET")
-     * @Template("BigfootCoreBundle:crud:index.html.twig")
      */
     public function indexAction()
     {
@@ -71,7 +70,6 @@ class MetadataController extends CrudController
      */
     public function editAction(Request $request, $id)
     {
-
         return $this->doEdit($request, $id);
     }
 
@@ -79,11 +77,10 @@ class MetadataController extends CrudController
      * Deletes a Metadata entity.
      *
      * @Route("/{id}", name="admin_portfolio_metadata_delete")
-     * @Method("DELETE")
+     * @Method("GET|DELETE")
      */
     public function deleteAction(Request $request, $id)
     {
-
-    return $this->doDelete($request, $id);
-}
+        return $this->doDelete($request, $id);
+    }
 }

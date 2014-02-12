@@ -1,9 +1,0 @@
-{% extends bigfoot_theme_bundle~'::base.html.twig' %}
-
-{% block body %}
-    {% include 'BigfootCoreBundle:crud:list.html.twig' with {
-    'action_edit': 'admin_portfolio_metadata_edit',
-    'list_title': 'Media Metadatas',
-    'fieldsList': {id: 'ID', name: 'Name'}
-    } %}
-{% endblock %}
