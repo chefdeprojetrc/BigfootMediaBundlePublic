@@ -52,57 +52,29 @@ class MetadataController extends CrudController
     {
         return $this->doIndex();
     }
-    /**
-     * Creates a new Metadata entity.
-     *
-     * @Route("/", name="admin_portfolio_metadata_create")
-     * @Method("POST")
-     * @Template("BigfootCoreBundle:crud:new.html.twig")
-     */
-    public function createAction(Request $request)
-    {
-
-        return $this->doCreate($request);
-    }
 
     /**
      * Displays a form to create a new Metadata entity.
      *
      * @Route("/new", name="admin_portfolio_metadata_new")
-     * @Method("GET")
-     * @Template("BigfootCoreBundle:crud:new.html.twig")
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
 
-        return $this->doNew();
+        return $this->doNew($request);
     }
 
     /**
      * Displays a form to edit an existing Metadata entity.
      *
      * @Route("/{id}/edit", name="admin_portfolio_metadata_edit")
-     * @Method("GET")
-     * @Template("BigfootCoreBundle:crud:edit.html.twig")
      */
-    public function editAction($id)
+    public function editAction(Request $request, $id)
     {
 
-        return $this->doEdit($id);
+        return $this->doEdit($request, $id);
     }
 
-    /**
-     * Edits an existing Metadata entity.
-     *
-     * @Route("/{id}", name="admin_portfolio_metadata_update")
-     * @Method("PUT")
-     * @Template("BigfootCoreBundle:crud:edit.html.twig")
-     */
-    public function updateAction(Request $request, $id)
-    {
-
-        return $this->doUpdate($request, $id);
-    }
     /**
      * Deletes a Metadata entity.
      *
