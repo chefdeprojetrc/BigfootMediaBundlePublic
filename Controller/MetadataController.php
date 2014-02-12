@@ -14,7 +14,7 @@ use Bigfoot\Bundle\CoreBundle\Controller\CrudController;
  * Metadata controller.
  *
  * @Cache(maxage="0", smaxage="0", public="false")
- * @Route("/admin/portfolio_metadata")
+ * @Route("/portfolio_metadata")
  */
 class MetadataController extends CrudController
 {
