@@ -50,7 +50,7 @@ class MediaController extends BaseController
 
         $selectedMediaIds = explode(';', $id);
 
-        $allMedias = $mediaRepository->findAll();
+        $allMedias = $mediaRepository->findBy(array(), null, '50');
         $query = $em->createQuery(
             'SELECT m
             FROM BigfootMediaBundle:Media m
