@@ -62,6 +62,10 @@
                 <source>Metadata management</source>
                 <target>Gestion des metadatas</target>
             </trans-unit>
+            <trans-unit id="16">
+                <source>Drag and drop your medias here</source>
+                <target>Déplacez vos images ici</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
