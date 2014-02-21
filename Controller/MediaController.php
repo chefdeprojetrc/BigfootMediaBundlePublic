@@ -58,12 +58,17 @@ class MediaController extends BaseController
         )->setParameter('ids', $selectedMediaIds);
         $selectedMedias = $query->getResult();
 
+        $orderedMedias = array_flip($selectedMediaIds);
+        foreach ($selectedMedias as $selectedMedia) {
+            $orderedMedias[$selectedMedia->getId()] = $selectedMedia;
+        }
+
         $searchData = new PortfolioSearchData();
         $searchForm = $this->container->get('form.factory')->create('bigfoot_portfolio_search', $searchData);
 
         return array(
             'allMedias'         => $allMedias,
-            'selectedMedias'    => $selectedMedias,
+            'selectedMedias'    => $orderedMedias,
             'mediaIds'          => $selectedMediaIds,
             'form'              => $searchForm->createView(),
         );
@@ -315,13 +320,6 @@ class MediaController extends BaseController
                 'html' => $this->container->get('twig')->render($themeBundle.':snippets:table.html.twig', array(
                     'allMedias' => $selectedMedias,
                     'mediaIds' => explode(';', $ids),
-                )),
-            )), 200, array('Content-Type', 'application/json'));
-
-            return new Response(json_encode(array(
-                'success' => false,
-                'html' => $this->container->get('twig')->render($themeBundle.':snippets:table.html.twig', array(
-                    'allMedias' => '',
                 )),
             )), 200, array('Content-Type', 'application/json'));
         }

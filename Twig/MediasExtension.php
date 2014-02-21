@@ -46,13 +46,13 @@ class MediasExtension extends \Twig_Extension
         $em = $this->container->get('doctrine')->getManager();
         $request = $this->container->get('request');
         $result = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
-        $tabMedia = array();
 
+        $orderedMedias = array_flip($ids);
         foreach ($result as $media) {
-            $tabMedia[] = sprintf('%s/%s', $request->getBasePath(), $media->getFile());
+            $orderedMedias[$media->getId()] = sprintf('%s/%s', $request->getBasePath(), $media->getFile());
         }
 
-        return $tabMedia;
+        return $orderedMedias;
     }
 
     /**
