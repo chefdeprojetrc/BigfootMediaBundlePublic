@@ -27,5 +27,6 @@ services:
     # Menu Listener
     bigfoot_media.listener.menu:
         class: Bigfoot\Bundle\MediaBundle\Listener\MenuListener
+        arguments: [@security.context]
         tags:
             - { name: kernel.event_subscriber }

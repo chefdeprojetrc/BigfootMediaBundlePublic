@@ -62,10 +62,10 @@ class MediaController extends BaseController
         $searchForm = $this->container->get('form.factory')->create('bigfoot_portfolio_search', $searchData);
 
         return array(
-            'allMedias' => $allMedias,
-            'selectedMedias' => $selectedMedias,
-            'mediaIds' => $selectedMediaIds,
-            'form' => $searchForm->createView(),
+            'allMedias'         => $allMedias,
+            'selectedMedias'    => $selectedMedias,
+            'mediaIds'          => $selectedMediaIds,
+            'form'              => $searchForm->createView(),
         );
     }
 
