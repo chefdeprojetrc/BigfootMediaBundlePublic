@@ -46,21 +46,24 @@ class MediaController extends BaseController
     public function popinAction($id)
     {
         $em = $this->container->get('doctrine')->getManager();
-        $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
+        $mediaRepository  = $em->getRepository('BigfootMediaBundle:Media');
+        $orderedMedias    = array();
+        $selectedMediaIds = array();
+        $allMedias        = $mediaRepository->findBy(array(), null, '50');
 
-        $selectedMediaIds = explode(';', $id);
+        if ($id) {
+            $selectedMediaIds = explode(';', $id);
+            $query = $em->createQuery(
+                'SELECT m
+                FROM BigfootMediaBundle:Media m
+                WHERE m.id IN (:ids)'
+            )->setParameter('ids', $selectedMediaIds);
+            $selectedMedias = $query->getResult();
+            $orderedMedias = array_flip($selectedMediaIds);
 
-        $allMedias = $mediaRepository->findBy(array(), null, '50');
-        $query = $em->createQuery(
-            'SELECT m
-            FROM BigfootMediaBundle:Media m
-            WHERE m.id IN (:ids)'
-        )->setParameter('ids', $selectedMediaIds);
-        $selectedMedias = $query->getResult();
-
-        $orderedMedias = array_flip($selectedMediaIds);
-        foreach ($selectedMedias as $selectedMedia) {
-            $orderedMedias[$selectedMedia->getId()] = $selectedMedia;
+            foreach ($selectedMedias as $selectedMedia) {
+                $orderedMedias[$selectedMedia->getId()] = $selectedMedia;
+            }
         }
 
         $searchData = new PortfolioSearchData();
