@@ -24,9 +24,10 @@ services:
             tags:
                 - { name: twig.extension }
 
-    # Menu Listener
-    bigfoot_media.listener.menu:
-        class: Bigfoot\Bundle\MediaBundle\Listener\MenuListener
-        arguments: [@security.context]
+    # Menu Subscriber
+    bigfoot_media.subscriber.menu:
+        class: Bigfoot\Bundle\MediaBundle\Subscriber\MenuSubscriber
+        arguments:
+            - @security.context
         tags:
             - { name: kernel.event_subscriber }
