@@ -42,16 +42,19 @@ class MediasExtension extends \Twig_Extension
      */
     public function mediasFilter($value)
     {
-        $ids = explode(';',$value);
-        $em = $this->container->get('doctrine')->getManager();
-        $request = $this->container->get('request');
-        $result = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
         $orderedMedias = array();
 
-        if ($ids) {
-            $orderedMedias = array_flip($ids);
-            foreach ($result as $media) {
-                $orderedMedias[$media->getId()] = sprintf('%s/%s', $request->getBasePath(), $media->getFile());
+        if ($value) {
+            $ids = explode(';',$value);
+            $em = $this->container->get('doctrine')->getManager();
+            $request = $this->container->get('request');
+            $result = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
+
+            if ($ids) {
+                $orderedMedias = array_flip($ids);
+                foreach ($result as $media) {
+                    $orderedMedias[$media->getId()] = sprintf('%s/%s', $request->getBasePath(), $media->getFile());
+                }
             }
         }
 
