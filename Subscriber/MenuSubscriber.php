@@ -43,11 +43,10 @@ class MenuSubscriber implements EventSubscriberInterface
      */
     public function onGenerateMain(GenericEvent $event)
     {
-        $menu = $event->getSubject();
-        $root = $menu->getRoot();
+        $builder = $event->getSubject();
 
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            $mediaMenu = $root->addChild(
+        $builder
+            ->addChild(
                 'media',
                 array(
                     'label'          => 'Media',
@@ -56,17 +55,16 @@ class MenuSubscriber implements EventSubscriberInterface
                         'class' => 'dropdown-toggle',
                         'icon'  => 'picture',
                     )
-                )
-            );
-
-            $mediaMenu->setChildrenAttributes(
+                ),
                 array(
-                    'class' => 'submenu',
+                    'children-attributes' => array(
+                        'class' => 'submenu'
+                    )
                 )
-            );
-
-            $mediaMenu->addChild(
-                'metadata',
+            )
+            ->addChildFor(
+                'media',
+                'media_metadata',
                 array(
                     'label'  => 'Metadata',
                     'route'  => 'admin_portfolio_metadata',
@@ -81,6 +79,5 @@ class MenuSubscriber implements EventSubscriberInterface
                     )
                 )
             );
-        }
     }
 }
