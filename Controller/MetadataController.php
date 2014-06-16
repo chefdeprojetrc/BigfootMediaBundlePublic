@@ -37,8 +37,12 @@ class MetadataController extends CrudController
     protected function getFields()
     {
         return array(
-            'id'   => 'ID',
-            'name' => 'Name',
+            'id'       => array(
+                'label' => 'ID',
+            ),
+            'name'     => array(
+                'label' => 'Name',
+            ),
         );
     }
     /**
