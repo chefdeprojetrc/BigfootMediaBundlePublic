@@ -2,6 +2,8 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Controller;
 
+use Bigfoot\Bundle\MediaBundle\Entity\MediaRepository;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -176,7 +178,7 @@ class MediaController extends BaseController
 
         // generate new name, relative and absolute path
         $image = uniqid().'_'.preg_replace('/\s+/', '_', $name);
-        $directory = $this->container->get('kernel')->getRootDir() . '/../web/'.$this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir');
+        $directory = $this->getUploadDir();
         $absolutePath = $directory.$image;
 
         if (!file_exists($directory)) {
@@ -329,6 +331,54 @@ class MediaController extends BaseController
     }
 
     /**
+     * @Route("/ck/upload", name="bigfoot_media_upload", options={"expose"=true})
+     */
+    public function ckUploadAction(Request $request)
+    {
+        $content = '';
+        /** @var UploadedFile $file */
+        if ($file = $request->files->get('upload', false)) {
+            try {
+                $fileName = $file->getClientOriginalName();
+                $mimeType = $file->getMimeType();
+                $size = $file->getSize();
+                $absPath = sprintf('%s/%s', rtrim($this->getUploadDir(), '/'), $request->get('CKEditor'));
+                $relPath = sprintf('%s/%s', rtrim($this->getUploadDir(false), '/'), $request->get('CKEditor'));
+                $file->move($absPath, $fileName);
+                $content = sprintf("window.parent.CKEDITOR.tools.callFunction(%s, '%s', '%s')",
+                    $request->get('CKEditorFuncNum'),
+                    sprintf('%s/%s', $relPath, $fileName),
+                    ''
+                );
+
+                $media = new Media();
+                $media->setFile(sprintf('%s/%s', $relPath, $fileName));
+                $media->setType($mimeType);
+
+                $em = $this->getDoctrine()->getManager();
+
+                $em->persist($media);
+                $em->flush();
+
+                /** @var MediaRepository $mediaRepository */
+                $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
+
+                list($width, $height) = getimagesize(sprintf('%s/%s', rtrim($absPath, '/'), $fileName));
+                $mediaRepository->setMetadata($media, 'title', $fileName);
+                $mediaRepository->setMetadata($media, 'width', $width);
+                $mediaRepository->setMetadata($media, 'height', $height);
+                $mediaRepository->setMetadata($media, 'size', $media->convertFileSize($size));
+
+                $em->flush();
+            } catch (\Exception $e) {
+                $content = sprintf('alert(\'%s\')', $e->getMessage());
+            }
+        }
+
+        return new Response(sprintf('<script>%s</script>', $content));
+    }
+
+    /**
      * Get media object from ID
      *
      * @param $id
@@ -340,5 +390,17 @@ class MediaController extends BaseController
         $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
 
         return $mediaRepository->find($id);
+    }
+
+    /**
+     * @return string
+     */
+    private function getUploadDir($absolute = true)
+    {
+        $dir = '';
+        if ($absolute) {
+            $dir .= $this->container->get('kernel')->getRootDir() . '/../web';
+        }
+        return rtrim($dir, '/').sprintf('/%s/%s', trim($this->container->getParameter('bigfoot.core.upload_dir'), '/'), trim($this->container->getParameter('bigfoot.media.portfolio_dir'), '/'));
     }
 }
