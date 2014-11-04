@@ -179,7 +179,7 @@ class MediaController extends BaseController
         // generate new name, relative and absolute path
         $image = uniqid().'_'.preg_replace('/\s+/', '_', $name);
         $directory = $this->getUploadDir();
-        $absolutePath = $directory.$image;
+        $absolutePath = $directory.'/'.$image;
 
         if (!file_exists($directory)) {
             $filesystem = $this->get('filesystem');
