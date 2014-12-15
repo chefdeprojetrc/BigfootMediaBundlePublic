@@ -2,11 +2,14 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * MediaUsage
  *
+ * @Gedmo\TranslationEntity(class="Bigfoot\Bundle\MediaBundle\Entity\Translation\MediaUsageTranslation")
  * @ORM\Table(name="portfolio_media_usage")
  * @ORM\Entity(repositoryClass="Bigfoot\Bundle\MediaBundle\Entity\MediaUsageRepository")
  */
@@ -49,6 +52,20 @@ class MediaUsage
      * @ORM\Column(name="element_id", type="integer")
      */
     private $elementId;
+
+    /**
+     * @ORM\OneToMany(
+     *   targetEntity="Bigfoot\Bundle\MediaBundle\Entity\Translation\MediaUsageTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
+    private $translations;
+
+    public function __construct()
+    {
+        $this->translations    = new ArrayCollection();
+    }
 
 
     /**
@@ -151,5 +168,24 @@ class MediaUsage
     public function getElementId()
     {
         return $this->elementId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * @param MediaUsageTranslation $t
+     */
+    public function addTranslation(MediaUsageTranslation $t)
+    {
+        if (!$this->translations->contains($t)) {
+            $this->translations[] = $t;
+            $t->setObject($this);
+        }
     }
 }
