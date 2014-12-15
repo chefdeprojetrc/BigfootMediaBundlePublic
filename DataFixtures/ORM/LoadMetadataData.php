@@ -3,6 +3,7 @@
 namespace Bigfoot\Bundle\UserBundle\DataFixtures\ORM;
 
 use Bigfoot\Bundle\MediaBundle\Entity\Metadata;
+use Bigfoot\Bundle\MediaBundle\Entity\Translation\MetadataTranslation;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -43,11 +44,10 @@ class LoadMetadataData implements FixtureInterface
 
         $manager->persist($size);
 
-        $repository = $manager->getRepository('Gedmo\\Translatable\\Entity\\Translation');
-        $repository->translate($title   , 'name', 'fr', 'Titre');
-        $repository->translate($width   , 'name', 'fr', 'Largeur');
-        $repository->translate($height  , 'name', 'fr', 'Hauteur');
-        $repository->translate($size    , 'name', 'fr', 'Taille');
+        $title->addTranslation(new MetadataTranslation('fr', 'name', 'Titre'));
+        $width->addTranslation(new MetadataTranslation('fr', 'name', 'Largeur'));
+        $height->addTranslation(new MetadataTranslation('fr', 'name', 'Hauteur'));
+        $size->addTranslation(new MetadataTranslation('fr', 'name', 'Taille'));
 
         $manager->flush();
     }

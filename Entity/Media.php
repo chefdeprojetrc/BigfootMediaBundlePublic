@@ -3,6 +3,7 @@
 namespace Bigfoot\Bundle\MediaBundle\Entity;
 
 use Bigfoot\Bundle\CoreBundle\Entity\Tag;
+use Bigfoot\Bundle\MediaBundle\Entity\Translation\MediaTranslation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Media
  *
+ * @Gedmo\TranslationEntity(class="Bigfoot\Bundle\MediaBundle\Entity\Translation\MediaTranslation")
  * @ORM\Table(name="portfolio_media")
  * @ORM\Entity(repositoryClass="Bigfoot\Bundle\MediaBundle\Entity\MediaRepository")
  */
@@ -81,13 +83,20 @@ class Media
     private $tags;
 
     /**
-     * Constructor.
+     * @ORM\OneToMany(
+     *   targetEntity="Bigfoot\Bundle\MediaBundle\Entity\Translation\MetadataTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
      */
+    private $translations;
+
     public function __construct()
     {
-        $this->usages = new ArrayCollection();
-        $this->tags = new ArrayCollection();
-        $this->metadatas = new ArrayCollection();
+        $this->translations    = new ArrayCollection();
+        $this->usages          = new ArrayCollection();
+        $this->tags            = new ArrayCollection();
+        $this->metadatas       = new ArrayCollection();
         $this->sortedMetadatas = array();
     }
 
@@ -362,5 +371,24 @@ class Media
         }
 
         return $toReturn;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * @param MediaTranslation $t
+     */
+    public function addTranslation(MediaTranslation $t)
+    {
+        if (!$this->translations->contains($t)) {
+            $this->translations[] = $t;
+            $t->setObject($this);
+        }
     }
 }

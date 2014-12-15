@@ -2,12 +2,15 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Entity;
 
+use Bigfoot\Bundle\MediaBundle\Entity\Translation\MetadataTranslation;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Metadata
  *
+ * @Gedmo\TranslationEntity(class="Bigfoot\Bundle\MediaBundle\Entity\Translation\MetadataTranslation")
  * @ORM\Table(name="portfolio_metadata")
  * @ORM\Entity(repositoryClass="Bigfoot\Bundle\MediaBundle\Entity\MetadataRepository")
  */
@@ -49,6 +52,20 @@ class Metadata
      * @Gedmo\Locale
      */
     private $locale;
+
+    /**
+     * @ORM\OneToMany(
+     *   targetEntity="Bigfoot\Bundle\MediaBundle\Entity\Translation\MetadataTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
+    private $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -130,5 +147,24 @@ class Metadata
     public function setTranslatableLocale($locale)
     {
         $this->locale = $locale;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * @param MetadataTranslation $t
+     */
+    public function addTranslation(MetadataTranslation $t)
+    {
+        if (!$this->translations->contains($t)) {
+            $this->translations[] = $t;
+            $t->setObject($this);
+        }
     }
 }
