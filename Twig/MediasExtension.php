@@ -37,6 +37,47 @@ class MediasExtension extends \Twig_Extension
     }
 
     /**
+    * @return array
+    */
+    public function getFunctions()
+    {
+        return array(
+            'media_details' => new \Twig_Function_Method($this, 'getMediasWithDetails'),
+        );
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getMediasWithDetails($value)
+    {
+        $orderedMedias = array();
+
+        if ($value) {
+            $ids     = explode(';',$value);
+            $em      = $this->container->get('doctrine')->getManager();
+            $request = $this->container->get('request');
+            $result  = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
+
+            if ($ids) {
+                $orderedMedias = array_flip($ids);
+
+                foreach ($result as $media) {
+                    $orderedMedias[$media->getId()] = array(
+                        'file'   => sprintf('%s/%s', $request->getBasePath(), $media->getFile()),
+                        'title'  => $media->getMetadata('title'),
+                        'width'  => $media->getMetadata('width'),
+                        'height' => $media->getMetadata('height')
+                    );
+                }
+            }
+        }
+
+        return $orderedMedias;
+    }
+
+    /**
      * @param $value
      * @return string
      */
@@ -45,13 +86,14 @@ class MediasExtension extends \Twig_Extension
         $orderedMedias = array();
 
         if ($value) {
-            $ids = explode(';',$value);
-            $em = $this->container->get('doctrine')->getManager();
+            $ids     = explode(';',$value);
+            $em      = $this->container->get('doctrine')->getManager();
             $request = $this->container->get('request');
-            $result = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
+            $result  = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
 
             if ($ids) {
                 $orderedMedias = array_flip($ids);
+
                 foreach ($result as $media) {
                     $orderedMedias[$media->getId()] = sprintf('%s/%s', $request->getBasePath(), $media->getFile());
                 }
