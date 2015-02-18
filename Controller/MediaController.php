@@ -177,7 +177,9 @@ class MediaController extends BaseController
         $media = new Media();
 
         // generate new name, relative and absolute path
-        $image = uniqid().'_'.preg_replace('/\s+/', '_', $name);
+        $fileManager = $this->container->get('bigfoot_core.manager.file_manager');
+        $name = $fileManager::sanityzeName($name);
+        $image = uniqid().'_'.$name;
         $directory = $this->getUploadDir();
         $absolutePath = $directory.'/'.$image;
 
