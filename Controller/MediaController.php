@@ -191,35 +191,30 @@ class MediaController extends BaseController
         if (file_put_contents($absolutePath, $decodedData)) {
             $relativePath = $this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir').$image;
             $imageInfos   = getimagesize($absolutePath);
-            if (!isset($imageInfos['channels']) or $imageInfos['channels'] == 3) { // channels sera 3 pour des images RGB et 4 pour des images CMYK.
-                $media
-                    ->setType($imageInfos['mime'])
-                    ->setFile($relativePath)
-                ;
+            $media
+                ->setType($imageInfos['mime'])
+                ->setFile($relativePath)
+            ;
 
-                $em = $this->container->get('doctrine')->getManager();
+            $em = $this->container->get('doctrine')->getManager();
 
-                $em->persist($media);
-                $em->flush();
+            $em->persist($media);
+            $em->flush();
 
-                $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
+            $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
 
-                $mediaRepository->setMetadata($media, 'title', $name);
-                $mediaRepository->setMetadata($media, 'width', $imageInfos[0]);
-                $mediaRepository->setMetadata($media, 'height', $imageInfos[1]);
-                $mediaRepository->setMetadata($media, 'size', $media->convertFileSize(filesize($absolutePath)));
+            $mediaRepository->setMetadata($media, 'title', $name);
+            $mediaRepository->setMetadata($media, 'width', $imageInfos[0]);
+            $mediaRepository->setMetadata($media, 'height', $imageInfos[1]);
+            $mediaRepository->setMetadata($media, 'size', $media->convertFileSize(filesize($absolutePath)));
 
-                $em->flush();
+            $em->flush();
 
-                $json['success'] = true;
-                $json['html'] = $this->container->get('twig')->render('BigfootMediaBundle:snippets:table_line.html.twig', array(
-                    'line' => $media,
-                    'used' => false,
-                ));
-            } else {
-                $json['html'] = $this->container->get('twig')->render('BigfootMediaBundle:snippets:unused.html.twig');
-                unlink($absolutePath);
-            }
+            $json['success'] = true;
+            $json['html'] = $this->container->get('twig')->render('BigfootMediaBundle:snippets:table_line.html.twig', array(
+                'line' => $media,
+                'used' => false,
+            ));
         }
 
         return new Response(json_encode($json), 200, array('Content-Type', 'application/json'));
