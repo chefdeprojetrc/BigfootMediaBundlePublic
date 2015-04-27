@@ -1,28 +1,33 @@
 services:
     form.type.portfolio_search:
         class: Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchType
-        arguments: [ @doctrine.orm.entity_manager ]
         tags:
             - { name: form.type, alias: bigfoot_portfolio_search }
+
     bigfoot.form.type.bigfoot_media_mediatype:
         class: Bigfoot\Bundle\MediaBundle\Form\MediaType
         arguments: [ @doctrine.orm.entity_manager ]
         tags:
             - { name: form.type, alias: bigfoot_media_mediatype }
+
     bigfoot.form.type.bigfoot_media:
         class: Bigfoot\Bundle\MediaBundle\Form\Type\BigfootMediaType
         tags:
             - { name: form.type, alias: bigfoot_media }
+
     bigfoot.twig.media_extension:
         class: Bigfoot\Bundle\MediaBundle\Twig\MediaExtension
         arguments: [ @service_container ]
         tags:
             - { name: twig.extension }
+
     bigfoot.twig.medias_extension:
-            class: Bigfoot\Bundle\MediaBundle\Twig\MediasExtension
-            arguments: [ @service_container ]
-            tags:
-                - { name: twig.extension }
+        class: Bigfoot\Bundle\MediaBundle\Twig\MediasExtension
+        calls:
+            - ['setProvider', ['@bigfoot_media.provider.media']]
+            - ['setRequestStack', ['@request_stack']]
+        tags:
+            - { name: twig.extension }
 
     # Menu Subscriber
     bigfoot_media.subscriber.menu:
@@ -31,3 +36,20 @@ services:
             - @security.context
         tags:
             - { name: kernel.event_subscriber }
+
+    # Media Provider
+    bigfoot_media.provider.abstract:
+        class: Bigfoot\Bundle\MediaBundle\Provider\Common\AbstractMediaProvider
+        abstract: true
+        calls:
+            - ['setEntityManager', ['@doctrine.orm.entity_manager']]
+            - ['setTheme', ['@bigfoot.theme']]
+            - ['setSession', ['@session']]
+
+    bigfoot_media.provider.default:
+        class: Bigfoot\Bundle\MediaBundle\Provider\MediaProvider
+        parent: bigfoot_media.provider.abstract
+
+    bigfoot_media.provider.media:
+        alias: bigfoot_media.provider.default
+

@@ -20,6 +20,12 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('bigfoot_media');
 
+        $rootNode
+            ->children()
+                ->scalarNode('provider')->defaultNull()->end()
+                ->scalarNode('cache')->defaultValue(true)->end()
+            ->end();
+
         return $treeBuilder;
     }
 }
