@@ -29,13 +29,6 @@ abstract class AbstractMediaProvider
      */
     protected $session;
 
-    // public function __construct(EntityManager $entityManager, Theme $theme, Session $session)
-    // {
-    //     $this->entityManager = $entityManager;
-    //     $this->theme = $theme;
-    //     $this->session = $session;
-    // }
-
     /**
      * Sets the value of entityManager.
      *
