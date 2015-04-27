@@ -85,11 +85,11 @@ class MediasExtension extends \Twig_Extension
 
         if ($value) {
             $ids       = explode(';', $value);
-            $result    = $this->provider->find($ids);
+            $results   = $this->provider->find($ids);
             $className = $this->provider->getClassName();
 
             if ($ids) {
-                foreach ($result as $media) {
+                foreach ($results as $media) {
                     if (!$media instanceof $className) {
                         continue;
                     }
@@ -106,17 +106,21 @@ class MediasExtension extends \Twig_Extension
      * @param $value
      * @return string
      */
-    public function mediasFilter($value)
+    public function mediasFilter($value, $entities = false)
     {
         $orderedMedias = array();
 
         if ($value) {
             $ids       = explode(';', $value);
-            $result    = $this->provider->find($ids);
+            $results   = $this->provider->find($ids);
             $className = $this->provider->getClassName();
 
+            if ($entities) {
+                return $results;
+            }
+
             if ($ids) {
-                foreach ($result as $media) {
+                foreach ($results as $media) {
                     if (!$media instanceof $className) {
                         continue;
                     }
