@@ -170,7 +170,7 @@ abstract class AbstractMediaProvider
      *
      * @return array
      */
-    abstract public function getMediaDetails($media);
+    abstract public function getMediaDetails(Request $request, $media);
 
     /**
      * Get total
