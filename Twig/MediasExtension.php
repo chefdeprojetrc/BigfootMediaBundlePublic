@@ -94,7 +94,7 @@ class MediasExtension extends \Twig_Extension
                         continue;
                     }
 
-                    $orderedMedias[$media->getId()] = $this->provider->getMediaDetails($media);
+                    $orderedMedias[$media->getId()] = $this->provider->getMediaDetails($this->request, $media);
                 }
             }
         }
