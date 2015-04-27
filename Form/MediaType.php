@@ -37,28 +37,42 @@ class MediaType extends AbstractType
         $em = $this->entityManager;
 
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($em) {
-                $data = $event->getData();
-                $form = $event->getForm();
+            ->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                function (FormEvent $event) use ($em) {
+                    $data = $event->getData();
+                    $form = $event->getForm();
 
-                if (!$data) {
-                    return null;
+                    if (!$data) {
+                        return null;
+                    }
+
+                    $mediaRepo = $em->getRepository('BigfootMediaBundle:Media');
+                    $mediaRepo->initMetadata($data);
+
+                    $form->add(
+                        'metadatas',
+                        'collection',
+                        array(
+                            'label' => ' ',
+                            'type' => new MediaMetadataType(),
+                            'options' => array(
+                                'required' => false,
+                                'attr' => array(
+                                    'class' => 'metadatas'
+                                )
+                            ),
+                        )
+                    );
                 }
-
-                $mediaRepo = $em->getRepository('BigfootMediaBundle:Media');
-                $mediaRepo->initMetadata($data);
-
-                $form->add('metadatas', 'collection', array(
-                    'type' => new MediaMetadataType(),
-                    'options' => array(
-                        'required' => false,
-                    ),
-                ));
-            })
-            ->add('tags', 'bigfoot_tag', array(
-                'label' => 'Tags',
-            ))
-        ;
+            )
+            ->add(
+                'tags',
+                'bigfoot_tag',
+                array(
+                    'label' => 'Tags',
+                )
+            );
     }
 
     /**
@@ -66,9 +80,11 @@ class MediaType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Bigfoot\Bundle\MediaBundle\Entity\Media'
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'Bigfoot\Bundle\MediaBundle\Entity\Media'
+            )
+        );
     }
 
     /**
