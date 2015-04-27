@@ -15,7 +15,7 @@
                         <table id="list" class="table table-striped ">
                             <tbody>
                                 {% for media in selectedMedias %}
-                                {% include 'BigfootMediaBundle:snippets:table_line.html.twig' with {'line': media, 'used': true} %}
+                                    {% include template_line with {'line': media, 'used': true} %}
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -51,6 +51,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="modal-footer">
                 <a class="portfolio-validate btn btn-link" href="#">{{ 'Submit' | trans }}</a>
             </div>

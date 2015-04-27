@@ -21,21 +21,30 @@ class MediaMetadataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
-                $data = $event->getData();
-                $form = $event->getForm();
+            ->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                function (FormEvent $event) {
+                    $data = $event->getData();
+                    $form = $event->getForm();
 
-                if (!$data) {
-                    return null;
+                    if (!$data) {
+                        return null;
+                    }
+
+                    $form->add(
+                        'value',
+                        'text',
+                        array(
+                            'label' => $data->getType()
+                        )
+                    );
                 }
-
-                $form->add('value', 'text', array(
-                    'label' => $data->getType(),
-                ));
-            })
+            )
             ->add('value')
-            ->add('translation', 'translatable_entity')
-        ;
+            ->add(
+                'translation',
+                'translatable_entity'
+            );
     }
 
     /**
@@ -43,9 +52,11 @@ class MediaMetadataType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Bigfoot\Bundle\MediaBundle\Entity\MediaMetadata'
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'Bigfoot\Bundle\MediaBundle\Entity\MediaMetadata'
+            )
+        );
     }
 
     /**

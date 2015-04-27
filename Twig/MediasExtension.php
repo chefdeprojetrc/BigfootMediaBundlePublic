@@ -4,7 +4,11 @@ namespace Bigfoot\Bundle\MediaBundle\Twig;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
+
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\RequestStack;
+
+use Bigfoot\Bundle\MediaBundle\Provider\Common\AbstractMediaProvider;
 
 /**
  * Helper filter facilitating the display of an image from the portfolio.
@@ -14,16 +18,41 @@ use Symfony\Component\DependencyInjection\Container;
 class MediasExtension extends \Twig_Extension
 {
     /**
-     * @var \Symfony\Component\DependencyInjection\Container
+     * @var Request
      */
-    private $container;
+    private $request;
 
     /**
-     * @param Container $container
+     * @var AbstractMediaProvider
      */
-    public function __construct(Container $container)
+    private $provider;
+
+    /**
+     * Sets the value of requestStack.
+     *
+     * @param RequestStack $requestStack the request stack
+     *
+     * @return self
+     */
+    public function setRequestStack(RequestStack $requestStack)
     {
-        $this->container = $container;
+        $this->request = $requestStack->getCurrentRequest();
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of provider.
+     *
+     * @param AbstractMediaProvider $provider the provider
+     *
+     * @return self
+     */
+    public function setProvider(AbstractMediaProvider $provider)
+    {
+        $this->provider = $provider;
+
+        return $this;
     }
 
     /**
@@ -55,21 +84,17 @@ class MediasExtension extends \Twig_Extension
         $orderedMedias = array();
 
         if ($value) {
-            $ids     = explode(';',$value);
-            $em      = $this->container->get('doctrine')->getManager();
-            $request = $this->container->get('request');
-            $result  = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
+            $ids       = explode(';', $value);
+            $result    = $this->provider->find($ids);
+            $className = $this->provider->getClassName();
 
             if ($ids) {
-                $orderedMedias = array_flip($ids);
-
                 foreach ($result as $media) {
-                    $orderedMedias[$media->getId()] = array(
-                        'file'   => sprintf('%s/%s', $request->getBasePath(), $media->getFile()),
-                        'title'  => $media->getMetadata('title'),
-                        'width'  => $media->getMetadata('width'),
-                        'height' => $media->getMetadata('height')
-                    );
+                    if (!$media instanceof $className) {
+                        continue;
+                    }
+
+                    $orderedMedias[$media->getId()] = $this->provider->getMediaDetails($media);
                 }
             }
         }
@@ -86,16 +111,17 @@ class MediasExtension extends \Twig_Extension
         $orderedMedias = array();
 
         if ($value) {
-            $ids     = explode(';',$value);
-            $em      = $this->container->get('doctrine')->getManager();
-            $request = $this->container->get('request');
-            $result  = $em->getRepository('Bigfoot\Bundle\MediaBundle\Entity\Media')->findBy(array('id' => $ids));
+            $ids       = explode(';', $value);
+            $result    = $this->provider->find($ids);
+            $className = $this->provider->getClassName();
 
             if ($ids) {
-                $orderedMedias = array_flip($ids);
-
                 foreach ($result as $media) {
-                    $orderedMedias[$media->getId()] = sprintf('%s/%s', $request->getBasePath(), $media->getFile());
+                    if (!$media instanceof $className) {
+                        continue;
+                    }
+
+                    $orderedMedias[$media->getId()] = $this->provider->getUrl($this->request, $media);
                 }
             }
         }

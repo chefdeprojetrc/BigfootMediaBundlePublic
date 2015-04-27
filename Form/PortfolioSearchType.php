@@ -10,77 +10,27 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class PortfolioSearchType
+ *
  * @package Bigfoot\Bundle\MediaBundle\Form
  */
 class PortfolioSearchType extends AbstractType
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    /**
-     * @param EntityManager $entityManager
-     */
-    public function __construct(EntityManager $entityManager)
-    {
-        $this->em = $entityManager;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $em = $this->em;
-
-        $builder->add('search', 'text', array(
-            'label'     => 'context.term',
-            'required'  => false,
-        ));
-
-        $query = $em->createQuery(
-            'SELECT mu.tableRef
-            FROM BigfootMediaBundle:MediaUsage mu'
+        $builder->add(
+            'search',
+            'text',
+            array(
+                'label'     => 'context.term',
+                'required'  => false,
+                'attr' => array(
+                    'data-portfolio-input' => 'search'
+                )
+            )
         );
-        $tables = $query->getResult(AbstractQuery::HYDRATE_ARRAY);
-
-        $tableChoices = array();
-        foreach ($tables as $table) {
-            $tableChoices[$table['tableRef']] = $table['tableRef'];
-        }
-
-        $builder->add('table', 'choice', array(
-            'label'         => 'Table',
-            'choices'       => $tableChoices,
-            'required'      => false,
-            'empty_value'   => 'Select a table',
-            'attr'          => array(
-                'class'    => 'portfolio-search-form-table',
-            ),
-        ));
-
-        $query = $em->createQuery(
-            'SELECT mu.columnRef
-            FROM BigfootMediaBundle:MediaUsage mu'
-        );
-        $columns = $query->getResult(AbstractQuery::HYDRATE_ARRAY);
-
-        $columnChoices = array();
-        foreach ($columns as $column) {
-            $columnChoices[$column['columnRef']] = $column['columnRef'];
-        }
-
-        $builder->add('column', 'choice', array(
-            'label'         => 'Field',
-            'choices'       => $columnChoices,
-            'required'      => false,
-            'empty_value'   => 'Select a field',
-            'attr'          => array(
-                'disabled' => 'disabled',
-                'class'    => 'portfolio-search-form-column',
-            ),
-        ));
     }
 
     /**

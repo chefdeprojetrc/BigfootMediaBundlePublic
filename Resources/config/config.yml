@@ -1,4 +1,5 @@
 liip_imagine:
+    data_loader: bigfoot_media
     filter_sets:
         media_thumbnail:
             quality: 90

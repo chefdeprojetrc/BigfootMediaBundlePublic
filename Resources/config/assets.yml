@@ -1,0 +1,5 @@
+assetic:
+    assets:
+        admin_js:
+            inputs:
+                - 'bundles/bigfootmedia/js/popin_paginate.js'
