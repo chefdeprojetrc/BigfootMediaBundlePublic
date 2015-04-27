@@ -61,6 +61,7 @@ class MediasExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
+            new \Twig_SimpleFilter('media', array($this, 'mediaFilter')),
             new \Twig_SimpleFilter('medias', array($this, 'mediasFilter'))
         );
     }
@@ -100,6 +101,21 @@ class MediasExtension extends \Twig_Extension
         }
 
         return $orderedMedias;
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function mediaFilter($value)
+    {
+        $medias = $this->mediasFilter($value);
+
+        if (empty($medias)) {
+            return null;
+        }
+
+        return current($medias);
     }
 
     /**
