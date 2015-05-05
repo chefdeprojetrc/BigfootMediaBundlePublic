@@ -48,7 +48,7 @@ class Media
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="MediaMetadata", mappedBy="media", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="MediaMetadata", mappedBy="media", cascade={"persist", "remove"})
      */
     private $metadatas;
 
@@ -60,7 +60,7 @@ class Media
     private $sortedMetadatas;
 
     /**
-     * @var datetime $createdAt
+     * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -68,7 +68,7 @@ class Media
     private $createdAt;
 
     /**
-     * @var datetime $updatedAt
+     * @var \DateTime $updatedAt
      *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
