@@ -2,6 +2,9 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Controller;
 
+use Bigfoot\Bundle\MediaBundle\Entity\Media;
+use Bigfoot\Bundle\MediaBundle\Entity\MediaRepository;
+use Bigfoot\Bundle\MediaBundle\Provider\Common\AbstractMediaProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,7 +29,7 @@ class PopinController extends BaseController
     /**
      * Get media provider
      *
-     * @return Bigfoot\Bundle\MediaBundle\Provider\Common\MediaProviderInterface
+     * @return AbstractMediaProvider
      */
     protected function getMediaProvider()
     {
@@ -94,7 +97,7 @@ class PopinController extends BaseController
                 ->setSearch($queryString);
         }
 
-        $form = $this->container->get('form.factory')->create('bigfoot_portfolio_search', $search);
+        $form = $this->createForm('bigfoot_portfolio_search', $search);
 
         return array(
             'allMedias'         => $allMedias,
@@ -276,7 +279,7 @@ class PopinController extends BaseController
      */
     public function deleteAction($id)
     {
-        $em = $this->container->get('doctrine')->getManager();
+        $em = $this->getEntityManager();
 
         $media = $this->getMedia($id);
 
@@ -347,11 +350,12 @@ class PopinController extends BaseController
                 ->setType($imageInfos['mime'])
                 ->setFile($relativePath);
 
-            $em = $this->container->get('doctrine')->getManager();
+            $em = $this->getEntityManager();
 
             $em->persist($media);
             $em->flush();
 
+            /** @var MediaRepository $mediaRepository */
             $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
 
             $mediaRepository->setMetadata($media, 'title', $name);
@@ -375,5 +379,34 @@ class PopinController extends BaseController
         }
 
         return new Response(json_encode($json), 200, array('Content-Type', 'application/json'));
+    }
+
+    /**
+     * Get media object from ID
+     *
+     * @param $id
+     * @return Media
+     */
+    private function getMedia($id)
+    {
+        $em = $this->getEntityManager();
+        /** @var MediaRepository $mediaRepository */
+        $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
+
+        return $mediaRepository->find($id);
+    }
+
+    /**
+     * @return string
+     */
+    private function getUploadDir($absolute = true)
+    {
+        $dir = '';
+
+        if ($absolute) {
+            $dir .= $this->get('kernel')->getRootDir() . '/../web';
+        }
+
+        return rtrim($dir, '/').sprintf('/%s/%s', trim($this->container->getParameter('bigfoot.core.upload_dir'), '/'), trim($this->container->getParameter('bigfoot.media.portfolio_dir'), '/'));
     }
 }

@@ -15,8 +15,6 @@ use Doctrine\ORM\AbstractQuery;
 use Bigfoot\Bundle\CoreBundle\Controller\BaseController;
 use Bigfoot\Bundle\CoreBundle\Entity\Tag;
 use Bigfoot\Bundle\MediaBundle\Entity\Media;
-use Bigfoot\Bundle\MediaBundle\Form\MediaType;
-use Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchData;
 
 /**
  * Bigfoot MediaController. Implements the routes necessary to display the media management module.
@@ -134,28 +132,16 @@ class MediaController extends BaseController
     }
 
     /**
-     * Get media object from ID
-     *
-     * @param $id
-     * @return Media
-     */
-    private function getMedia($id)
-    {
-        $em = $this->container->get('doctrine')->getManager();
-        $mediaRepository = $em->getRepository('BigfootMediaBundle:Media');
-
-        return $mediaRepository->find($id);
-    }
-
-    /**
      * @return string
      */
     private function getUploadDir($absolute = true)
     {
         $dir = '';
+
         if ($absolute) {
-            $dir .= $this->container->get('kernel')->getRootDir() . '/../web';
+            $dir .= $this->get('kernel')->getRootDir() . '/../web';
         }
+
         return rtrim($dir, '/').sprintf('/%s/%s', trim($this->container->getParameter('bigfoot.core.upload_dir'), '/'), trim($this->container->getParameter('bigfoot.media.portfolio_dir'), '/'));
     }
 }
