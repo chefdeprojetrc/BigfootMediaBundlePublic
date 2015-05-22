@@ -1,5 +1,6 @@
 $(function() {
     $('body').on('click', '[data-container=paginate] [data-action=paginate]', function(event) {
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -19,9 +20,6 @@ $(function() {
                     pages = Math.ceil(total / per_page),
                     start = page < 3 ? 1 : page > (pages - 2) ? pages - 2 : page - 1;
                     end   = page < 3 ? 3 : page > (pages - 2) ? pages : page + 1;
-
-                console.log(start);
-                console.log(end);
 
                 container.html('');
 
@@ -80,7 +78,7 @@ $(function() {
 
                 refresh();
             } else {
-                console.log(response.message);
+                //console.log(response.message);
             }
         });
     });
