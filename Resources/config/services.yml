@@ -1,3 +1,6 @@
+parameters:
+    bigfoot.form.type.bigfoot_media.class: Bigfoot\Bundle\MediaBundle\Form\Type\BigfootMediaType
+
 services:
     form.type.portfolio_search:
         class: Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchType
@@ -11,7 +14,7 @@ services:
             - { name: form.type, alias: bigfoot_media_mediatype }
 
     bigfoot.form.type.bigfoot_media:
-        class: Bigfoot\Bundle\MediaBundle\Form\Type\BigfootMediaType
+        class: %bigfoot.form.type.bigfoot_media.class%
         tags:
             - { name: form.type, alias: bigfoot_media }
 

@@ -4,7 +4,9 @@ namespace Bigfoot\Bundle\MediaBundle\Controller;
 
 use Bigfoot\Bundle\MediaBundle\Entity\Media;
 use Bigfoot\Bundle\MediaBundle\Entity\MediaRepository;
+use Bigfoot\Bundle\MediaBundle\Event\PortfolioEvent;
 use Bigfoot\Bundle\MediaBundle\Provider\Common\AbstractMediaProvider;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -49,7 +51,7 @@ class PopinController extends BaseController
      */
     protected function getElementsPerPage()
     {
-        return 20;
+        return 5;
     }
 
     /**
@@ -77,6 +79,8 @@ class PopinController extends BaseController
      */
     public function popinAction($id)
     {
+        $this->get('event_dispatcher')->dispatch(PortfolioEvent::OPEN_POPIN, new GenericEvent($id));
+
         $provider = $this->getMediaProvider();
 
         $orderedMedias    = array();
@@ -116,6 +120,7 @@ class PopinController extends BaseController
      */
     public function searchAction(Request $request)
     {
+
         $search   = new PortfolioSearchData();
         $form     = $this->createForm('bigfoot_portfolio_search', $search);
         $provider = $this->getMediaProvider();
