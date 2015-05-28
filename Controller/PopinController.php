@@ -92,16 +92,9 @@ class PopinController extends BaseController
             $orderedMedias    = $provider->find($selectedMediaIds);
         }
 
-        $search = new PortfolioSearchData();
+        $search = $provider->getSearchData();
 
-        $queryString = $this->getSession()->get('bigfoot_media.portfolio.search');
-
-        if (!empty($queryString)) {
-            $search
-                ->setSearch($queryString);
-        }
-
-        $form = $this->createForm('bigfoot_portfolio_search', $search);
+        $form = $this->createForm($provider->getSearchFormType(), $search);
 
         return array(
             'allMedias'         => $allMedias,
@@ -120,15 +113,16 @@ class PopinController extends BaseController
      */
     public function searchAction(Request $request)
     {
-
-        $search   = new PortfolioSearchData();
-        $form     = $this->createForm('bigfoot_portfolio_search', $search);
         $provider = $this->getMediaProvider();
+
+        $search = $provider->getSearchData();
+
+        $form     = $this->createForm($provider->getSearchFormType(), $search);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $this->getSession()->set('bigfoot_media.portfolio.search', $search->getSearch());
+            $this->getSession()->set($provider->getSearchSessionKey(), $search->getSearchForSession());
 
             $results = $provider->search($search, 0, $this->getElementsPerPage());
 
