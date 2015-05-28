@@ -2,13 +2,14 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Form;
 
+use Bigfoot\Bundle\MediaBundle\Form\Common\AbstractPortfolioSearchData;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class PortfolioSearchData
  * @package Bigfoot\Bundle\MediaBundle\Form
  */
-class PortfolioSearchData
+class PortfolioSearchData extends AbstractPortfolioSearchData
 {
     /**
      * @var string
@@ -29,6 +30,14 @@ class PortfolioSearchData
      * @return string
      */
     public function getSearch()
+    {
+        return $this->search;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchForSession()
     {
         return $this->search;
     }

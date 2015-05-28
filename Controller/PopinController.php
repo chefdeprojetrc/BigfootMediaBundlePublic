@@ -15,7 +15,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 use Bigfoot\Bundle\CoreBundle\Controller\BaseController;
-use Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchData;
 
 /**
  * Bigfoot PopinController
@@ -88,42 +87,38 @@ class PopinController extends BaseController
             $orderedMedias    = $provider->find($selectedMediaIds);
         }
 
-        $search = new PortfolioSearchData();
+        $search = $provider->getSearchData();
 
-        $queryString = $this->getSession()->get('bigfoot_media.portfolio.search');
-
-        if (!empty($queryString)) {
-            $search
-                ->setSearch($queryString);
-        }
-
-        $form = $this->createForm('bigfoot_portfolio_search', $search);
+        $form = $this->createForm($provider->getSearchFormType(), $search);
 
         return array(
-            'allMedias'         => $allMedias,
-            'selectedMedias'    => $orderedMedias,
-            'mediaIds'          => $selectedMediaIds,
-            'form'              => $form->createView(),
-            'template_line'     => $provider->getLineTemplate(),
-            'perPage'           => $this->getElementsPerPage(),
-            'total'             => $provider->getTotal(),
-            'configuration'     => $provider->getConfiguration()
+            'allMedias'      => $allMedias,
+            'selectedMedias' => $orderedMedias,
+            'mediaIds'       => $selectedMediaIds,
+            'form'           => $form->createView(),
+            'template_line'  => $provider->getLineTemplate(),
+            'perPage'        => $this->getElementsPerPage(),
+            'total'          => $provider->getTotal(),
+            'configuration'  => $provider->getConfiguration()
         );
     }
 
     /**
      * @Route("/popin/search", name="portfolio_search")
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function searchAction(Request $request)
     {
-        $search   = new PortfolioSearchData();
-        $form     = $this->createForm('bigfoot_portfolio_search', $search);
         $provider = $this->getMediaProvider();
-
+        $search   = $provider->getSearchData();
+        $form     = $this->createForm($provider->getSearchFormType(), $search);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $this->getSession()->set('bigfoot_media.portfolio.search', $search->getSearch());
+            $this->getSession()->set($provider->getSearchSessionKey(), $search->getSearchForSession());
 
             $results = $provider->search($search, 0, $this->getElementsPerPage());
 
@@ -150,6 +145,8 @@ class PopinController extends BaseController
                 )
             );
         }
+
+        return new JsonResponse(false);
     }
 
     /**
@@ -158,7 +155,9 @@ class PopinController extends BaseController
      * @Route("/popin/paginate", name="portfolio_popin_paginate")
      * @Method("POST")
      *
-     * @return JsonResponse
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function paginateAction(Request $request)
     {
@@ -204,6 +203,11 @@ class PopinController extends BaseController
      * @Route("/popin/{id}/edit", name="portfolio_edit")
      * @Method({"GET", "POST"})
      * @Template("BigfootMediaBundle:snippets:edit.html.twig")
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param                                           $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, $id)
     {
@@ -276,6 +280,10 @@ class PopinController extends BaseController
      * Handles deletion
      *
      * @Route("/popin/{id}/delete", name="portfolio_delete")
+     *
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function deleteAction($id)
     {
@@ -289,7 +297,7 @@ class PopinController extends BaseController
         return new Response(
             json_encode(
                 array(
-                    'id' => $id,
+                    'id'      => $id,
                     'success' => true,
                 )
             ),
@@ -303,6 +311,11 @@ class PopinController extends BaseController
 
     /**
      * Handles upload
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
      *
      * @Route("/upload", name="portfolio_upload")
      */
@@ -318,13 +331,8 @@ class PopinController extends BaseController
             'html'    => null,
         );
 
-        // get the mime
-        $getMime = explode('.', $name);
-        $mime    = end($getMime);
-
-        // separete out the data
+        // separate out the data
         $data = explode(',', $file);
-
         // encode it correctly
         $encodedData = str_replace(' ', '+', $data[1]);
         $decodedData = base64_decode($encodedData);
@@ -332,10 +340,10 @@ class PopinController extends BaseController
         $media = new Media();
 
         // generate new name, relative and absolute path
-        $fileManager = $this->container->get('bigfoot_core.manager.file_manager');
-        $name = $fileManager->sanitizeName($name);
-        $image = uniqid().'_'.$name;
-        $directory = $this->getUploadDir();
+        $fileManager  = $this->container->get('bigfoot_core.manager.file_manager');
+        $name         = $fileManager->sanitizeName($name);
+        $image        = uniqid().'_'.$name;
+        $directory    = $this->getUploadDir();
         $absolutePath = $directory.'/'.$image;
 
         if (!file_exists($directory)) {
@@ -344,7 +352,9 @@ class PopinController extends BaseController
         }
 
         if (file_put_contents($absolutePath, $decodedData)) {
-            $relativePath = $this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir').$image;
+            $relativePath = $this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter(
+                    'bigfoot.media.portfolio_dir'
+                ).$image;
             $imageInfos   = getimagesize($absolutePath);
             $media
                 ->setType($imageInfos['mime'])
@@ -366,7 +376,7 @@ class PopinController extends BaseController
             $em->flush();
 
             $json['success'] = true;
-            $json['html'] = $this
+            $json['html']    = $this
                 ->container
                 ->get('twig')
                 ->render(
@@ -385,6 +395,7 @@ class PopinController extends BaseController
      * Get media object from ID
      *
      * @param $id
+     *
      * @return Media
      */
     private function getMedia($id)
@@ -397,6 +408,8 @@ class PopinController extends BaseController
     }
 
     /**
+     * @param bool $absolute
+     *
      * @return string
      */
     private function getUploadDir($absolute = true)
@@ -404,9 +417,13 @@ class PopinController extends BaseController
         $dir = '';
 
         if ($absolute) {
-            $dir .= $this->get('kernel')->getRootDir() . '/../web';
+            $dir .= $this->get('kernel')->getRootDir().'/../web';
         }
 
-        return rtrim($dir, '/').sprintf('/%s/%s', trim($this->container->getParameter('bigfoot.core.upload_dir'), '/'), trim($this->container->getParameter('bigfoot.media.portfolio_dir'), '/'));
+        return rtrim($dir, '/').sprintf(
+            '/%s/%s',
+            trim($this->container->getParameter('bigfoot.core.upload_dir'), '/'),
+            trim($this->container->getParameter('bigfoot.media.portfolio_dir'), '/')
+        );
     }
 }

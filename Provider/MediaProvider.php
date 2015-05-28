@@ -2,6 +2,8 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Provider;
 
+use Bigfoot\Bundle\MediaBundle\Entity\Media;
+use Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchData;
 use Symfony\Component\HttpFoundation\Request;
 
 use Bigfoot\Bundle\MediaBundle\Provider\Common\AbstractMediaProvider;
@@ -201,6 +203,7 @@ class MediaProvider extends AbstractMediaProvider
 
         $ordered = array();
 
+        /** @var Media $media */
         foreach ($medias as $media) {
             $ordered[$media->getId()] = $media;
         }
@@ -249,5 +252,44 @@ class MediaProvider extends AbstractMediaProvider
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Get search form type
+     *
+     * @return string
+     */
+    public function getSearchFormType()
+    {
+        return 'bigfoot_portfolio_search';
+    }
+
+    /**
+     * Get search form type
+     *
+     * @return string
+     */
+    public function getSearchData()
+    {
+        $search = new PortfolioSearchData();
+
+        $queryString = $this->session->get('bigfoot_media.portfolio.search');
+
+        if (!empty($queryString)) {
+            $search
+                ->setSearch($queryString);
+        }
+
+        return $search;
+    }
+
+    /**
+     * Get search session key
+     *
+     * @return string
+     */
+    public function getSearchSessionKey()
+    {
+        return 'bigfoot_media.portfolio.search';
     }
 }

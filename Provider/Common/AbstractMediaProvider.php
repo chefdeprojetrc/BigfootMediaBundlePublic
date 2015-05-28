@@ -2,8 +2,10 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Provider\Common;
 
+use Bigfoot\Bundle\MediaBundle\Form\Common\AbstractPortfolioSearchData;
 use Doctrine\ORM\EntityManager;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -133,6 +135,27 @@ abstract class AbstractMediaProvider
     abstract public function getFormType();
 
     /**
+     * Get search form type
+     *
+     * @return string
+     */
+    abstract public function getSearchFormType();
+
+    /**
+     * Get search form type
+     *
+     * @return AbstractPortfolioSearchData
+     */
+    abstract public function getSearchData();
+
+    /**
+     * Get search session key
+     *
+     * @return string
+     */
+    abstract public function getSearchSessionKey();
+
+    /**
      * Get form template
      *
      * @return string
@@ -194,7 +217,7 @@ abstract class AbstractMediaProvider
      *
      * @param  mixed $identifier
      *
-     * @return array
+     * @return object
      */
     abstract public function find($identifier);
 
