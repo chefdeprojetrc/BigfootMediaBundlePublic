@@ -133,6 +133,27 @@ abstract class AbstractMediaProvider
     abstract public function getFormType();
 
     /**
+     * Get search form type
+     *
+     * @return string
+     */
+    abstract public function getSearchFormType();
+
+    /**
+     * Get search form type
+     *
+     * @return string
+     */
+    abstract public function getSearchData();
+
+    /**
+     * Get search session key
+     *
+     * @return string
+     */
+    abstract public function getSearchSessionKey();
+
+    /**
      * Get form template
      *
      * @return string
