@@ -2,6 +2,7 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Provider;
 
+use Bigfoot\Bundle\MediaBundle\Entity\Media;
 use Bigfoot\Bundle\MediaBundle\Form\PortfolioSearchData;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -202,6 +203,7 @@ class MediaProvider extends AbstractMediaProvider
 
         $ordered = array();
 
+        /** @var Media $media */
         foreach ($medias as $media) {
             $ordered[$media->getId()] = $media;
         }
