@@ -201,11 +201,15 @@ class MediaProvider extends AbstractMediaProvider
             ->getQuery()
             ->getResult();
 
-        $ordered = array();
+        $mediasUnsorted = $ordered = array();
 
         /** @var Media $media */
         foreach ($medias as $media) {
-            $ordered[$media->getId()] = $media;
+            $mediasUnsorted[$media->getId()] = $media;
+        }
+
+        foreach ($identifier as $id) {
+            $ordered[$id] = $mediasUnsorted[$id];
         }
 
         return $ordered;
