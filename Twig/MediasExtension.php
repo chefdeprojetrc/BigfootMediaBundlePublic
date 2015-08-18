@@ -155,7 +155,7 @@ class MediasExtension extends \Twig_Extension
                         continue;
                     }
 
-                    $orderedMedias[$media->getId()] = $media->getUrl();
+                    $orderedMedias[$media->getId()] = $this->provider->getUrl($this->request, $media);
                 }
             }
         }
