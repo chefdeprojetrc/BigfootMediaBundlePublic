@@ -7,6 +7,7 @@ use Doctrine\ORM\Query;
 
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 use Bigfoot\Bundle\MediaBundle\Provider\Common\AbstractMediaProvider;
 
@@ -125,6 +126,7 @@ class MediasExtension extends \Twig_Extension
     public function mediasFilter($value, $entities = false)
     {
         $orderedMedias = array();
+        $accessor = PropertyAccess::createPropertyAccessor();
 
         if ($value) {
             $ids       = explode(';', $value);
@@ -137,6 +139,18 @@ class MediasExtension extends \Twig_Extension
 
             if ($ids) {
                 foreach ($results as $media) {
+                    if (is_array($media)) {
+                        $id = $accessor->getValue($media, '[id]');
+                        $url = $accessor->getValue($media, '[url]');
+
+                        if (empty($id) || empty($url)) {
+                            continue;
+                        }
+
+                        $orderedMedias[$id] = $url;
+                        continue;
+                    }
+
                     if (!$media instanceof $className) {
                         continue;
                     }
