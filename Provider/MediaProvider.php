@@ -209,7 +209,9 @@ class MediaProvider extends AbstractMediaProvider
         }
 
         foreach ($identifier as $id) {
-            $ordered[$id] = $mediasUnsorted[$id];
+            if (isset($mediasUnsorted[$id])) {
+                $ordered[$id] = $mediasUnsorted[$id];
+            }
         }
 
         return $ordered;
