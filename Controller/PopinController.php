@@ -50,7 +50,7 @@ class PopinController extends BaseController
      */
     protected function getElementsPerPage()
     {
-        return 5;
+        return 30;
     }
 
     /**
