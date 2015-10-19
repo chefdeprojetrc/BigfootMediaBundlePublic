@@ -26,6 +26,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('cache')->defaultValue(true)->end()
                 ->integerNode('pagination_per_page')
                     ->treatNullLike(5)
+                    ->defaultValue(5)
                     ->min(1)
                 ->end()
             ->end()
