@@ -28,6 +28,7 @@ class BigfootMediaExtension extends Extension implements PrependExtensionInterfa
 
         $container->setParameter('bigfoot_media.provider', $config['provider']);
         $container->setParameter('bigfoot_media.cache', $config['cache']);
+        $container->setParameter('bigfoot_media.pagination_per_page', $config['pagination_per_page']);
     }
 
     /**

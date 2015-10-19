@@ -50,7 +50,7 @@ class PopinController extends BaseController
      */
     protected function getElementsPerPage()
     {
-        return 30;
+        return $this->container->getParameter('bigfoot_media_library_client.pagination_per_page');
     }
 
     /**

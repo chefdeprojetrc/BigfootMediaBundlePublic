@@ -24,7 +24,12 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('provider')->defaultNull()->end()
                 ->scalarNode('cache')->defaultValue(true)->end()
-            ->end();
+                ->integerNode('pagination_per_page')
+                    ->treatNullLike(5)
+                    ->min(1)
+                ->end()
+            ->end()
+        ;
 
         return $treeBuilder;
     }
