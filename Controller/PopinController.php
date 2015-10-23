@@ -356,9 +356,7 @@ class PopinController extends BaseController
         }
 
         if (file_put_contents($absolutePath, $decodedData)) {
-            $relativePath = $this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter(
-                    'bigfoot.media.portfolio_dir'
-                ).$image;
+            $relativePath = $this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir').$image;
             $imageInfos   = getimagesize($absolutePath);
             $media
                 ->setType($imageInfos['mime'])

@@ -12,6 +12,3 @@ liip_imagine:
             quality: 90
             filters:
                 thumbnail:  { size: [500, 250], mode: outbound }
-
-bigfoot_media:
-    pagination_per_page: ~
