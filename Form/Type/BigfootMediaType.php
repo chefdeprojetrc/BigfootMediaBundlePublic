@@ -9,6 +9,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+use Bigfoot\Bundle\MediaBundle\Form\DataTransformer\MediaTransformer;
+use Bigfoot\Bundle\MediaBundle\Provider\Common\AbstractMediaProvider;
+
 /**
  * Helper type allowing to use the media portfolio popin in a form to fill in a media field.
  *
@@ -20,13 +23,48 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class BigfootMediaType extends AbstractType
 {
     /**
+     * @var AbstractMediaProvider
+     */
+    private $provider;
+
+    /**
+     * Sets the value of provider.
+     *
+     * @param AbstractMediaProvider $provider the provider
+     *
+     * @return self
+     */
+    public function setProvider(AbstractMediaProvider $provider)
+    {
+        $this->provider = $provider;
+
+        return $this;
+    }
+
+    /**
+     * Build form
+     *
+     * @param  FormBuilderInterface $builder
+     * @param  array                $options
+     *
+     * @return null
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addModelTransformer(new MediaTransformer($this->provider));
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars = array_replace($view->vars, array(
-            'type'  => 'file',
-        ));
+        $view->vars = array_replace(
+            $view->vars,
+            array(
+                'type'  => 'file',
+            )
+        );
     }
 
     /**
@@ -42,9 +80,11 @@ class BigfootMediaType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'compound' => false,
-        ));
+        $resolver->setDefaults(
+            array(
+                'compound' => false,
+            )
+        );
     }
 
     /**
