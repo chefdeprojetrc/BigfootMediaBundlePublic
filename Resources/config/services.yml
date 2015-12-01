@@ -15,6 +15,8 @@ services:
 
     bigfoot.form.type.bigfoot_media:
         class: %bigfoot.form.type.bigfoot_media.class%
+        calls:
+            - ['setProvider', ['@bigfoot_media.provider.media']]
         tags:
             - { name: form.type, alias: bigfoot_media }
 
