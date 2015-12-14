@@ -189,8 +189,12 @@ class MediaProvider extends AbstractMediaProvider
     {
         if (!is_array($identifier)) {
             return $this
-            ->getRepository()
-            ->find($identifier);
+                ->getRepository()
+                ->createQueryBuilder('e')
+                ->where('e.id IN (:ids)')
+                ->setParameter('ids', $identifier)
+                ->getQuery()
+                ->getResult();
         }
 
         $medias = $this
