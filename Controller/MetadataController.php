@@ -45,15 +45,18 @@ class MetadataController extends CrudController
             ),
         );
     }
+
     /**
      * Lists all Metadata entities.
      *
      * @Route("/", name="admin_portfolio_metadata")
      * @Method("GET")
+     * @param Request $request
+     * @return array
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->doIndex();
+        return $this->doIndex($request);
     }
 
     /**
