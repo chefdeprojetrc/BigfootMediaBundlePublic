@@ -9,7 +9,7 @@ services:
 
     bigfoot.form.type.bigfoot_media_mediatype:
         class: Bigfoot\Bundle\MediaBundle\Form\MediaType
-        arguments: [ @doctrine.orm.entity_manager ]
+        arguments: [ '@doctrine.orm.entity_manager' ]
         tags:
             - { name: form.type, alias: bigfoot_media_mediatype }
 
@@ -32,7 +32,7 @@ services:
     bigfoot_media.subscriber.menu:
         class: Bigfoot\Bundle\MediaBundle\Subscriber\MenuSubscriber
         arguments:
-            - @security.context
+            - '@security.token_storage'
         tags:
             - { name: kernel.event_subscriber }
 

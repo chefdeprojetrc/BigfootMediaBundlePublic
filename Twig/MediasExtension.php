@@ -73,7 +73,7 @@ class MediasExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'media_details' => new \Twig_Function_Method($this, 'getMediasWithDetails'),
+            new \Twig_SimpleFunction('media_details', array($this, 'getMediasWithDetails')),
         );
     }
 
