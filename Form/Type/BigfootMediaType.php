@@ -59,6 +59,7 @@ class BigfootMediaType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
+
         $view->vars = array_replace(
             $view->vars,
             array(
@@ -83,6 +84,7 @@ class BigfootMediaType extends AbstractType
         $resolver->setDefaults(
             array(
                 'compound' => false,
+                'portfolioLimit' => 0
             )
         );
     }
