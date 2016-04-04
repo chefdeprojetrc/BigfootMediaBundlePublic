@@ -222,6 +222,7 @@ class PopinController extends BaseController
         }
 
         $media = $provider->find($id);
+        $media = is_array($media) ? current($media) : $media;
         $form  = $this->createForm($provider->getFormType(), $media);
 
         if ($request->isMethod('POST')) {
