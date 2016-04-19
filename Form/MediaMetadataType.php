@@ -2,11 +2,13 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Form;
 
+use Bigfoot\Bundle\CoreBundle\Form\Type\TranslatedEntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**
  * Class MediaMetadataType
@@ -33,7 +35,7 @@ class MediaMetadataType extends AbstractType
 
                     $form->add(
                         'value',
-                        'text',
+                        TextType::class,
                         array(
                             'label' => $data->getType()
                         )
@@ -43,12 +45,12 @@ class MediaMetadataType extends AbstractType
             ->add('value')
             ->add(
                 'translation',
-                'translatable_entity'
+                TranslatedEntityType::class
             );
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {

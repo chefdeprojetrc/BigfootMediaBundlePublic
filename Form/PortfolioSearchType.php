@@ -5,6 +5,7 @@ namespace Bigfoot\Bundle\MediaBundle\Form;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -22,7 +23,7 @@ class PortfolioSearchType extends AbstractType
     {
         $builder->add(
             'search',
-            'text',
+            TextType::class,
             array(
                 'label'     => 'context.term',
                 'required'  => false,

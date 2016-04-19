@@ -2,6 +2,7 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Form;
 
+use Bigfoot\Bundle\CoreBundle\Form\Type\TranslatedEntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,12 +22,12 @@ class MetadataType extends AbstractType
         $builder
             ->add('name')
             ->add('slug')
-            ->add('translation', 'translatable_entity')
+            ->add('translation', TranslatedEntityType::class)
         ;
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {

@@ -2,8 +2,10 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Form;
 
+use Bigfoot\Bundle\CoreBundle\Form\Type\BigfootTagType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -52,11 +54,11 @@ class MediaType extends AbstractType
 
                     $form->add(
                         'metadatas',
-                        'collection',
+                        CollectionType::class,
                         array(
                             'label' => ' ',
-                            'type' => new MediaMetadataType(),
-                            'options' => array(
+                            'entry_type' => MediaMetadataType::class,
+                            'entry_options' => array(
                                 'required' => false,
                                 'attr' => array(
                                     'class' => 'metadatas'
@@ -68,7 +70,7 @@ class MediaType extends AbstractType
             )
             ->add(
                 'tags',
-                'bigfoot_tag',
+                BigfootTagType::class,
                 array(
                     'label' => 'Tags',
                 )
@@ -76,7 +78,7 @@ class MediaType extends AbstractType
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
