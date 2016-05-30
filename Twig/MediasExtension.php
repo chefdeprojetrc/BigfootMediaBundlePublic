@@ -37,9 +37,17 @@ class MediasExtension extends \Twig_Extension
      */
     public function setRequestStack(RequestStack $requestStack)
     {
-        $this->request = $requestStack->getCurrentRequest();
+        $this->request = $requestStack;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->request->getCurrentRequest();
     }
 
     /**
@@ -92,7 +100,7 @@ class MediasExtension extends \Twig_Extension
 
             if ($ids) {
                 foreach ($results as $key => $media) {
-                    $orderedMedias[$key] = $this->provider->getMediaDetails($this->request, $media);
+                    $orderedMedias[$key] = $this->provider->getMediaDetails($this->getRequest(), $media);
                 }
             }
         }
@@ -151,7 +159,7 @@ class MediasExtension extends \Twig_Extension
                         continue;
                     }
 
-                    $orderedMedias[$media->getId()] = $this->provider->getUrl($this->request, $media);
+                    $orderedMedias[$media->getId()] = $this->provider->getUrl($this->getRequest(), $media);
                 }
             }
         }

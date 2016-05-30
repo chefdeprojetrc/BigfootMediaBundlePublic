@@ -2,6 +2,7 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Controller;
 
+use Bigfoot\Bundle\MediaBundle\Form\MetadataType;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -44,6 +45,14 @@ class MetadataController extends CrudController
                 'label' => 'Name',
             ),
         );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getFormType()
+    {
+        return MetadataType::class;
     }
 
     /**
