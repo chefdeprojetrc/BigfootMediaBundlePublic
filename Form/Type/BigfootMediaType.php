@@ -45,7 +45,7 @@ class BigfootMediaType extends AbstractType
      * Build form
      *
      * @param  FormBuilderInterface $builder
-     * @param  array                $options
+     * @param  array $options
      *
      * @return null
      */
@@ -59,13 +59,15 @@ class BigfootMediaType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-
         $view->vars = array_replace(
             $view->vars,
             array(
-                'type'  => 'file',
+                'type' => 'file',
             )
         );
+
+        $view->vars['width']  = $options['width'];
+        $view->vars['height'] = $options['height'];
     }
 
     /**
@@ -83,8 +85,10 @@ class BigfootMediaType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'compound' => false,
-                'portfolioLimit' => 0
+                'compound'       => false,
+                'portfolioLimit' => 0,
+                'width'          => 300,
+                'height'         => 200
             )
         );
     }
