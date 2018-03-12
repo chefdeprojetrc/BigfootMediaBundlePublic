@@ -2,6 +2,7 @@
 
 namespace Bigfoot\Bundle\MediaBundle\Twig;
 
+use Bigfoot\Bundle\MediaBundle\Entity\Media;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 
@@ -71,7 +72,8 @@ class MediasExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFilter('media', array($this, 'mediaFilter')),
-            new \Twig_SimpleFilter('medias', array($this, 'mediasFilter'))
+            new \Twig_SimpleFilter('medias', array($this, 'mediasFilter')),
+            new \Twig_SimpleFilter('media_url', array($this, 'mediaUrl'))
         );
     }
 
@@ -112,9 +114,9 @@ class MediasExtension extends \Twig_Extension
      * @param $value
      * @return string
      */
-    public function mediaFilter($value)
+    public function mediaFilter($value, $entities = false)
     {
-        $medias = $this->mediasFilter($value);
+        $medias = $this->mediasFilter($value, $entities);
 
         if (empty($medias)) {
             return null;
@@ -165,6 +167,18 @@ class MediasExtension extends \Twig_Extension
         }
 
         return $orderedMedias;
+    }
+
+    /**
+     * @param \Bigfoot\Bundle\MediaBundle\Entity\Media $media
+     */
+    public function mediaUrl(Media $media = null)
+    {
+        if (null === $media) {
+            return null;
+        }
+
+        return $this->provider->getUrl($this->getRequest(), $media);
     }
 
     /**

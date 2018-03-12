@@ -3,8 +3,10 @@
 namespace Bigfoot\Bundle\MediaBundle\Form;
 
 use Bigfoot\Bundle\CoreBundle\Form\Type\BigfootTagType;
+use Bigfoot\Bundle\MediaBundle\Entity\Media;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -73,6 +75,24 @@ class MediaType extends AbstractType
                 BigfootTagType::class,
                 array(
                     'label' => 'Tags',
+                )
+            )
+            ->add(
+                'cropPosition',
+                ChoiceType::class,
+                array(
+                    'label' => 'Position du crop',
+                    'choices' => [
+                        'En haut à gauche' => Media::CROP_TOP_LEFT,
+                        'En haut' => Media::CROP_TOP_CENTER,
+                        'En haut à droite' => Media::CROP_TOP_RIGHT,
+                        'A gauche' => Media::CROP_CENTER_LEFT,
+                        'Au centre' => Media::CROP_CENTER_CENTER,
+                        'A droite' => Media::CROP_CENTER_RIGHT,
+                        'En bas à gauche' => Media::CROP_BOTTOM_LEFT,
+                        'En bas' => Media::CROP_BOTTOM_CENTER,
+                        'En bas à droite' => Media::CROP_BOTTOM_RIGHT,
+                    ]
                 )
             );
     }

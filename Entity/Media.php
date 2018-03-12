@@ -5,8 +5,8 @@ namespace Bigfoot\Bundle\MediaBundle\Entity;
 use Bigfoot\Bundle\CoreBundle\Entity\Tag;
 use Bigfoot\Bundle\MediaBundle\Entity\Translation\MediaTranslation;
 use Doctrine\Common\Collections\ArrayCollection;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Media
@@ -17,6 +17,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Media
 {
+    const CROP_TOP_LEFT      = 'top_left';
+    const CROP_TOP_CENTER    = 'top_center';
+    const CROP_TOP_RIGHT     = 'top_right';
+    const CROP_CENTER_LEFT   = 'center_left';
+    const CROP_CENTER_CENTER = 'center_center';
+    const CROP_CENTER_RIGHT  = 'center_right';
+    const CROP_BOTTOM_LEFT   = 'bottom_left';
+    const CROP_BOTTOM_CENTER = 'bottom_center';
+    const CROP_BOTTOM_RIGHT  = 'bottom_right';
+
     /**
      * @var integer
      *
@@ -83,6 +93,11 @@ class Media
     private $tags;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $cropPosition = self::CROP_CENTER_CENTER;
+
+    /**
      * @ORM\OneToMany(
      *   targetEntity="Bigfoot\Bundle\MediaBundle\Entity\Translation\MetadataTranslation",
      *   mappedBy="object",
@@ -97,13 +112,13 @@ class Media
         $this->usages          = new ArrayCollection();
         $this->tags            = new ArrayCollection();
         $this->metadatas       = new ArrayCollection();
-        $this->sortedMetadatas = array();
+        $this->sortedMetadatas = [];
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -114,19 +129,20 @@ class Media
      * Set file
      *
      * @param string $file
+     *
      * @return Media
      */
     public function setFile($file)
     {
         $this->file = $file;
-    
+
         return $this;
     }
 
     /**
      * Get file
      *
-     * @return string 
+     * @return string
      */
     public function getFile()
     {
@@ -137,19 +153,20 @@ class Media
      * Set type
      *
      * @param string $type
+     *
      * @return Media
      */
     public function setType($type)
     {
         $this->type = $type;
-    
+
         return $this;
     }
 
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -170,6 +187,7 @@ class Media
      * Set metadatas
      *
      * @param array $metadatas
+     *
      * @return Media
      */
     public function setMetadatas($metadatas)
@@ -183,6 +201,7 @@ class Media
      * Add metadata
      *
      * @param MediaMetadata $metadata
+     *
      * @return Media
      */
     public function addMetadata(MediaMetadata $metadata)
@@ -212,6 +231,7 @@ class Media
      * Get the value of a specific metadata
      *
      * @param string Metadata slug
+     *
      * @return string Metadata value
      */
     public function getMetadata($slug)
@@ -225,7 +245,7 @@ class Media
 
     public function resetSortedMetadatas()
     {
-        $this->sortedMetadatas = array();
+        $this->sortedMetadatas = [];
     }
 
     /**
@@ -252,6 +272,7 @@ class Media
      * Set tags
      *
      * @param ArrayCollection $tags
+     *
      * @return Media
      */
     public function setTags(ArrayCollection $tags)
@@ -265,6 +286,7 @@ class Media
      * Add tag
      *
      * @param Tag tag
+     *
      * @return Media
      */
     public function addTag(Tag $tag)
@@ -278,6 +300,7 @@ class Media
      * Remove tag
      *
      * @param Tag tag
+     *
      * @return Media
      */
     public function removeTag(Tag $tag)
@@ -305,12 +328,12 @@ class Media
 
     /**
      * @param \Symfony\Component\Form\Form $form
+     *
      * @return void
      */
     public function uploadFile(\Symfony\Component\Form\Form $form)
     {
-        if (!file_exists($this->getUploadRootDir() . '/' . $form['file']->getData()))
-        {
+        if (!file_exists($this->getUploadRootDir().'/'.$form['file']->getData())) {
             list($width, $height) = getimagesize($form['file']->getData()->getPathName());
 
             $this->setWidth($width);
@@ -324,17 +347,18 @@ class Media
 
     /**
      * @param $bytes
+     *
      * @return string
      */
     public function convertFileSize($bytes)
     {
         switch ($bytes) {
-            case $bytes > 1024*1024*1024:
-                return round($bytes/1024/1024/1024, 2) ." Go";
-            case $bytes > 1024*1024:
-                return round($bytes/1024/1024, 2) ." Mo";
+            case $bytes > 1024 * 1024 * 1024:
+                return round($bytes / 1024 / 1024 / 1024, 2)." Go";
+            case $bytes > 1024 * 1024:
+                return round($bytes / 1024 / 1024, 2)." Mo";
             case $bytes > 1024:
-                return round($bytes/1024, 2) ." Ko";
+                return round($bytes / 1024, 2)." Ko";
             default:
                 return $bytes;
         }
@@ -361,11 +385,9 @@ class Media
      */
     public function getTagsForSlider()
     {
-        $toReturn = array();
-        foreach ($this->getPortfolioTags() as $tag)
-        {
-            if ($tag->getPortfolioTagCategory() && $tag->getPortfolioTagCategory()->getSlug() == 'camping')
-            {
+        $toReturn = [];
+        foreach ($this->getPortfolioTags() as $tag) {
+            if ($tag->getPortfolioTagCategory() && $tag->getPortfolioTagCategory()->getSlug() == 'camping') {
                 $toReturn[] = $tag->getSlug();
             }
         }
@@ -390,5 +412,52 @@ class Media
             $this->translations[] = $t;
             $t->setObject($this);
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCropPosition()
+    {
+        return $this->cropPosition ?: self::CROP_CENTER_CENTER;
+    }
+
+    /**
+     * @param mixed $cropPosition
+     *
+     * @return $this
+     */
+    public function setCropPosition($cropPosition)
+    {
+        $this->cropPosition = $cropPosition;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCropPositionForHtml()
+    {
+        switch ($this->cropPosition) {
+            case self::CROP_TOP_LEFT:
+                return 'top left';
+            case self::CROP_TOP_CENTER:
+                return 'top';
+            case self::CROP_TOP_RIGHT:
+                return 'top right';
+            case self::CROP_CENTER_LEFT:
+                return 'left';
+            case self::CROP_CENTER_RIGHT:
+                return 'right';
+            case self::CROP_BOTTOM_LEFT:
+                return 'bottom left';
+            case self::CROP_BOTTOM_CENTER:
+                return 'bottom';
+            case self::CROP_BOTTOM_RIGHT:
+                return 'bottom right';
+        }
+
+        return '';
     }
 }

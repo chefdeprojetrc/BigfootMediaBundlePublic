@@ -360,7 +360,7 @@ class PopinController extends BaseController
             $relativePath = $this->container->getParameter('bigfoot.core.upload_dir').$this->container->getParameter('bigfoot.media.portfolio_dir').$image;
             $imageInfos   = getimagesize($absolutePath);
             $media
-                ->setType($imageInfos['mime'])
+                ->setType($imageInfos['mime'] ?: 'application/octet-stream')
                 ->setFile($relativePath);
 
             $em = $this->getEntityManager();
