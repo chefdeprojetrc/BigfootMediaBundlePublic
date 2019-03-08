@@ -218,7 +218,7 @@ class Media
      */
     public function getMetadatas()
     {
-        if (!count($this->sortedMetadatas)) {
+        if ($this->sortedMetadatas && !count($this->sortedMetadatas)) {
             foreach ($this->metadatas as $mediaMetadada) {
                 $this->sortedMetadatas[$mediaMetadada->getMetadata()->getSlug()] = $mediaMetadada;
             }
