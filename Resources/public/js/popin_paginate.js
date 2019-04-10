@@ -15,48 +15,48 @@ $(function() {
 
 
         function refresh () {
-                var
-                    tmpl  = $('<li><a href="#_" data-action="paginate"></a></li>'),
-                    pages = Math.ceil(total / per_page),
-                    start = page < 3 ? 1 : page > (pages - 2) ? pages - 2 : page - 1;
-                    end   = page < 3 ? 3 : page > (pages - 2) ? pages : page + 1;
+            var
+                tmpl  = $('<li><a href="#_" data-action="paginate"></a></li>'),
+                pages = Math.ceil(total / per_page),
+                start = page < 3 ? 1 : page > (pages - 2) ? pages - 2 : page - 1;
+            end   = page < 3 ? 3 : page > (pages - 2) ? pages : page + 1;
 
-                container.html('');
+            container.html('');
 
-                if (page != 1) {
-                    var element = tmpl.clone();
+            if (page != 1) {
+                var element = tmpl.clone();
 
-                    element.find('a').data('page', 1);
-                    element.find('a').attr('data-page', 1);
-                    element.find('a').html('<<');
+                element.find('a').data('page', 1);
+                element.find('a').attr('data-page', 1);
+                element.find('a').html('<<');
 
-                    container.append(element);
+                container.append(element);
+            }
+
+            for (var i = start; i <= end; i++) {
+                var element = tmpl.clone();
+
+                element.find('a').data('page', i);
+                element.find('a').attr('data-page', i);
+                element.find('a').html(i);
+
+                if (i == page) {
+                    element.addClass('active');
                 }
 
-                for (var i = start; i <= end; i++) {
-                    var element = tmpl.clone();
-
-                    element.find('a').data('page', i);
-                    element.find('a').attr('data-page', i);
-                    element.find('a').html(i);
-
-                    if (i == page) {
-                        element.addClass('active');
-                    }
-
-                    container.append(element);
-                };
-
-                if (page != pages) {
-                    var element = tmpl.clone();
-
-                    element.find('a').data('page', pages);
-                    element.find('a').attr('data-page', pages);
-                    element.find('a').html('>>');
-
-                    container.append(element);
-                }
+                container.append(element);
             };
+
+            if (page != pages) {
+                var element = tmpl.clone();
+
+                element.find('a').data('page', pages);
+                element.find('a').attr('data-page', pages);
+                element.find('a').html('>>');
+
+                container.append(element);
+            }
+        };
 
         $.ajax({
             url: href,
@@ -70,13 +70,18 @@ $(function() {
                 var
                     content = response.content,
                     total   = response.total,
-                    target  = $('[data-container=list]');
+                    target  = $('[data-container=list]'),
+                    target_pagination = $('[data-container=paginate]');
 
                 target.html(content);
                 target.data('total', total);
                 target.attr('data-total', total);
 
-                refresh();
+                if(response.pagination) {
+                    $(target_pagination).html(response.pagination);
+                } else {
+                    refresh();
+                }
             } else {
                 //console.log(response.message);
             }
